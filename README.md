@@ -122,3 +122,9 @@ Built with modern web technologies and a focus on user privacy and local-first d
 ---
 
 **Note**: This project is in active development. Features and APIs may change significantly between releases.
+
+# Social
+
+## Join the discord
+
+[Discord](https://discord.gg/3KjsGcRHvc)
