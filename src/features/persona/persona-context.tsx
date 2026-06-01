@@ -1,7 +1,7 @@
 import { createContext, PropsWithChildren, useContext } from "react";
-import { PersonaSelect } from "./types";
+import { PersonaSelect } from "./persona-types";
 import { useQuery } from "@tanstack/react-query";
-import { getPersonas } from "./action";
+import { getPersonas } from "./persona-action";
 
 type PersonaActionState = {
   personas: PersonaSelect[];

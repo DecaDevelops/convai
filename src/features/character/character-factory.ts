@@ -1,4 +1,4 @@
-import { characterInsert, characterRequest } from "./type";
+import { characterInsert, characterRequest } from "./character-type";
 import { v4 as uuidv4 } from "uuid";
 export class CharacterFactory {
   public static Create(character: characterRequest): characterInsert {

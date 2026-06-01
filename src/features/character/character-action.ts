@@ -1,8 +1,8 @@
 "use server";
 
 import db from "@/data/db";
-import { CharacterFactory } from "./factory";
-import { characterRequest } from "./type";
+import { CharacterFactory } from "./character-factory";
+import { characterRequest } from "./character-type";
 import { Character, Chat } from "@/data/schema";
 import { eq } from "drizzle-orm";
 import { deleteFile, transferFile } from "../image/transfer";
@@ -64,7 +64,6 @@ export async function deleteCharacter(id: string) {
   for (const image of character.image) {
     await deleteFile(image);
   }
-  // if (count.changes === 0) throw new Error("Could not delete character");
   return true;
 }
 

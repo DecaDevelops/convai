@@ -1,6 +1,6 @@
 "use client";
 import React, { useMemo, useState } from "react";
-import { characterRequest } from "./type";
+import { characterRequest } from "./character-type";
 import {
   Card,
   CardContent,

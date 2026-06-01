@@ -1,6 +1,6 @@
 "use client";
-import { createPersona } from "@/features/persona/action";
-import PersonaForm from "@/features/persona/form";
+import { createPersona } from "@/features/persona/persona-action";
+import PersonaForm from "@/features/persona/persona-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React from "react";

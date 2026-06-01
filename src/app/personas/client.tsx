@@ -1,7 +1,7 @@
 "use client";
-import usePersonas from "@/features/persona/context";
+import usePersonas from "@/features/persona/persona-context";
 import React from "react";
-import PersonaCard from "@/features/persona/card";
+import PersonaCard from "@/features/persona/persona-card";
 export default function Client() {
   const { personas } = usePersonas();
   return (

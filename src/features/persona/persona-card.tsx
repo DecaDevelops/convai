@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { memo } from "react";
-import { PersonaSelect } from "./types";
+import { PersonaSelect } from "./persona-types";
 import Image from "next/image";
 type props = {
   persona: PersonaSelect;

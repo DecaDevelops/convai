@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { PersonaRequest } from "./types";
+import { PersonaRequest } from "./persona-types";
 import { FormDataConverter } from "@/lib/form-data";
 import { InputWithLabel } from "@/components/input-with-label";
 import { TextAreaWithLabel } from "@/components/textarea-with-label";

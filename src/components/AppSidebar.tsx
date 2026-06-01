@@ -12,6 +12,7 @@ import {
 import Link from "next/link";
 import {
   Bot,
+  BrainCircuit,
   Clock,
   Cpu,
   Drama,
@@ -90,8 +91,8 @@ export default function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupLabel>Manage Models</SidebarGroupLabel>
           <SidebarMenuButton asChild>
-            <Link href={`/interference-profiles`}>
-              <Cpu /> <span>Manage interference profiles</span>
+            <Link href={`/api-keys`}>
+              <Key /> <span>Api Keys</span>
             </Link>
           </SidebarMenuButton>
           <SidebarMenuButton asChild>
@@ -101,8 +102,13 @@ export default function AppSidebar() {
             </Link>
           </SidebarMenuButton>
           <SidebarMenuButton asChild>
-            <Link href={`/api-keys`}>
-              <Key /> <span>Api Keys</span>
+            <Link href={`/models`}>
+              <BrainCircuit /> <span>Manage Models</span>
+            </Link>
+          </SidebarMenuButton>
+          <SidebarMenuButton asChild>
+            <Link href={`/interference-profiles`}>
+              <Cpu /> <span>Manage interference profiles</span>
             </Link>
           </SidebarMenuButton>
         </SidebarGroup>

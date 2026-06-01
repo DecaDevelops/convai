@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { ChatInsert, ChatRequest } from "./types";
+import { ChatInsert, ChatRequest } from "./chat-types";
 export class ChatFactory {
   public static Create(req: ChatRequest): ChatInsert {
     const date = new Date();

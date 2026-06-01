@@ -1,11 +1,11 @@
 "use client";
 
 import { createContext, PropsWithChildren, useContext, useState } from "react";
-import { PersonaSelect } from "../persona/types";
-import { ChatSelect } from "./types";
-import { characterSelect } from "../character/type";
-import useCharacters from "../character/context";
-import usePersonas from "../persona/context";
+import { PersonaSelect } from "../persona/persona-types";
+import { ChatSelect } from "./chat-types";
+import { characterSelect } from "../character/character-type";
+import useCharacters from "../character/character-context";
+import usePersonas from "../persona/persona-context";
 import { useChatMutations } from "./use-chat-mutation";
 
 type ChatActionState = {

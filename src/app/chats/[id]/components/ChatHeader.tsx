@@ -8,10 +8,20 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import useChat from "@/features/chat/context";
-import { EllipsisVertical, VenetianMask } from "lucide-react";
-import { useEffect } from "react";
-const ChatHeaderDropdown = () => {
+import useChat from "@/features/chat/chat-context";
+import { useChatMutations } from "@/features/chat/use-chat-mutation";
+import {
+  EllipsisVertical,
+  MessageCirclePlus,
+  VenetianMask,
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import PersonaSelectSheet from "./PersonaSelect";
+const ChatHeaderDropdown: React.FC<{
+  onOpenPersona: VoidFunction;
+}> = ({ onOpenPersona }) => {
+  const { doCreateChat } = useChatMutations();
+  const { character } = useChat();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -24,7 +34,12 @@ const ChatHeaderDropdown = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-full" align="end">
-        <DropdownMenuItem className="w-full">
+        <DropdownMenuItem
+          onClick={() => doCreateChat({ characterId: character?.id })}
+        >
+          <MessageCirclePlus /> <span>Create new chat</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={onOpenPersona}>
           <VenetianMask /> <span>Change Persona</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
@@ -34,6 +49,7 @@ const ChatHeaderDropdown = () => {
 
 export default function ChatHeader() {
   const { character } = useChat();
+  const [openPersona, setOpenPersona] = useState(false);
   useEffect(() => {
     console.log(character);
   }, [character]);
@@ -42,12 +58,15 @@ export default function ChatHeader() {
     : "/images/upload.png";
   console.log(image);
   return (
-    <div className="flex flex-row justify-between w-full bg-slate-900 p-2">
-      <div className="flex flex-row">
-        <PopoverImage url={image} height={72} width={72} />
-        <span className="text-xl">{character?.name}</span>
+    <>
+      <PersonaSelectSheet open={openPersona} setOpen={setOpenPersona} />
+      <div className="flex flex-row justify-between w-full bg-slate-900 p-2">
+        <div className="flex flex-row">
+          <PopoverImage url={image} height={72} width={72} />
+          <span className="text-xl">{character?.name}</span>
+        </div>
+        <ChatHeaderDropdown onOpenPersona={() => setOpenPersona(true)} />
       </div>
-      <ChatHeaderDropdown />
-    </div>
+    </>
   );
 }

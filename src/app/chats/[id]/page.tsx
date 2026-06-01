@@ -1,9 +1,9 @@
 import { ChatMessageProvider } from "@/features/chat-message/context";
 
-import { ChatContextProvider } from "@/features/chat/context";
+import { ChatContextProvider } from "@/features/chat/chat-context";
 import React from "react";
 import Client from "./client";
-import { getChat } from "@/features/chat/action";
+import { getChat } from "@/features/chat/chat-action";
 
 export default async function Page({
   params,

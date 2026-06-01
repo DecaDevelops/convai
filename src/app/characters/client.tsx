@@ -1,12 +1,15 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { createCharacter, deleteCharacter } from "@/features/character/action";
-import useCharacters from "@/features/character/context";
+import {
+  createCharacter,
+  deleteCharacter,
+} from "@/features/character/character-action";
+import useCharacters from "@/features/character/character-context";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React from "react";
-import CharacterCard from "@/features/character/card";
+import CharacterCard from "@/features/character/character-card";
 import { toast } from "sonner";
-import { createChat, createNewChat } from "@/features/chat/action";
+import { createChat, createNewChat } from "@/features/chat/chat-action";
 import { useRouter } from "next/navigation";
 
 export default function Client() {

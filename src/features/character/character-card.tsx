@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { memo } from "react";
-import { characterSelect } from "./type";
+import { characterSelect } from "./character-type";
 import Image from "next/image";
 import { EllipsisVertical, MessageCirclePlus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useCharacterMutations } from "./mutations";
+import { useCharacterMutations } from "./use-character-mutations";
 type props = {
   character: characterSelect;
   onDelete: VoidFunction;

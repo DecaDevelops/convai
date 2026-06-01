@@ -1,7 +1,11 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createCharacter, deleteCharacter, updateCharacter } from "./action";
+import {
+  createCharacter,
+  deleteCharacter,
+  updateCharacter,
+} from "./character-action";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 

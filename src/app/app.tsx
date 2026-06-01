@@ -2,8 +2,11 @@
 
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { CharacterContextProvider } from "@/features/character/context";
-import { PersonaContextProvider } from "@/features/persona/context";
+import { ApiKeyContextProvider } from "@/features/apiKey/api-keys-context";
+import { CharacterContextProvider } from "@/features/character/character-context";
+import { ModelContextProvider } from "@/features/model/model-context";
+import { PersonaContextProvider } from "@/features/persona/persona-context";
+import { ProviderContextProvider } from "@/features/provider/provider-context";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { PropsWithChildren } from "react";
 import { Toaster } from "sonner";
@@ -18,7 +21,13 @@ export default function App({ children }: PropsWithChildren) {
           <TooltipProvider>
             <Toaster />
             <CharacterContextProvider>
-              <PersonaContextProvider>{children}</PersonaContextProvider>
+              <PersonaContextProvider>
+                <ApiKeyContextProvider>
+                  <ProviderContextProvider>
+                    <ModelContextProvider>{children}</ModelContextProvider>
+                  </ProviderContextProvider>
+                </ApiKeyContextProvider>
+              </PersonaContextProvider>
             </CharacterContextProvider>
           </TooltipProvider>
         </SidebarProvider>

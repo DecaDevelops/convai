@@ -2,11 +2,12 @@
 
 import db from "@/data/db";
 import { FormDataConverter } from "@/lib/form-data";
-import { PersonaRequest } from "./types";
-import { PersonaFactory } from "./factory";
-import { transferFile } from "../image/transfer";
+import { PersonaRequest } from "./persona-types";
+import { PersonaFactory } from "./persona-factory";
+import { deleteFile, transferFile } from "../image/transfer";
 import { ImageFactory } from "../image/ImageFactory";
 import { Persona } from "@/data/schema";
+import { eq } from "drizzle-orm";
 
 export async function getPersonas() {
   return await db.query.Persona.findMany();
@@ -30,5 +31,18 @@ export async function createPersona(formData: FormData) {
   persona.image = fileName;
   await db.insert(Persona).values(persona);
 
+  return true;
+}
+
+export async function deletePersona(personaId: string) {
+  const [persona] = await db
+    .delete(Persona)
+    .where(eq(Persona.id, personaId))
+    .returning();
+
+  const image = persona?.image;
+  if (image) {
+    await deleteFile(image);
+  }
   return true;
 }
