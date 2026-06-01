@@ -1,0 +1,148 @@
+"use client";
+import React, { memo, SyntheticEvent, useState } from "react";
+import { InterferenceProfileRequest } from "./interference-profile-types";
+import useModels from "../model/model-context";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ModelSelect } from "../model/model-types";
+import { Button } from "@/components/ui/button";
+import { Save } from "lucide-react";
+import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+
+const DEFAULT: InterferenceProfileRequest = {
+  modelId: "",
+  topK: 70,
+  topP: 40,
+  temperature: 0,
+  maxResponseTokens: 300,
+};
+
+const ModelSelectItem: React.FC<{ model: ModelSelect }> = memo(({ model }) => {
+  return <SelectItem value={model.id}>{model.name}</SelectItem>;
+});
+
+ModelSelectItem.displayName = "ModelSelectItem";
+
+export default function InterferenceProfileForm({
+  onSendForm,
+  isPending,
+}: {
+  onSendForm: (req: InterferenceProfileRequest) => void;
+  isPending: boolean;
+}) {
+  const { models } = useModels();
+
+  const [profile, setProfile] = useState(DEFAULT);
+  const onSubmitForm = (e: SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (isPending) return;
+
+    onSendForm(profile);
+  };
+  return (
+    <form onSubmit={onSubmitForm} className="space-y-2 w-full">
+      <Field>
+        <FieldLabel htmlFor="model">
+          Model<span className="text-red-500">*</span>
+        </FieldLabel>
+        <Select
+          required
+          onValueChange={(e) => setProfile((c) => ({ ...c, modelId: e }))}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select model" />
+          </SelectTrigger>
+          <SelectContent align="start">
+            {models.map((x) => (
+              <ModelSelectItem model={x} key={x.id} />
+            ))}
+          </SelectContent>
+        </Select>
+        <FieldDescription className="text-sm">
+          Select the model to use with this profile
+        </FieldDescription>
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="temperature">
+          Temperature<span className="text-red-500">*</span>
+        </FieldLabel>
+        <Input
+          required
+          id="temperature"
+          type="number"
+          placeholder="Example: 70"
+          autoComplete="off"
+          value={profile.temperature}
+          onChange={(e) =>
+            setProfile((c) => ({ ...c, temperature: parseInt(e.target.value) }))
+          }
+        />
+        <FieldDescription className="text-sm">
+          Controls randomness in the output (0-100)
+        </FieldDescription>
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="topK">Top K</FieldLabel>
+        <Input
+          id="topK"
+          type="number"
+          placeholder="Example: 70"
+          autoComplete="off"
+          value={profile.topK}
+          onChange={(e) =>
+            setProfile((c) => ({ ...c, topK: parseInt(e.target.value) }))
+          }
+        />
+        <FieldDescription className="text-sm">
+          Limits the number of tokens to consider (default: 70)
+        </FieldDescription>
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="topP">Top P</FieldLabel>
+        <Input
+          id="topP"
+          type="number"
+          placeholder="Example: 40"
+          autoComplete="off"
+          value={profile.topP}
+          onChange={(e) =>
+            setProfile((c) => ({ ...c, topP: parseInt(e.target.value) }))
+          }
+        />
+        <FieldDescription className="text-sm">
+          Nucleus sampling threshold (default: 40)
+        </FieldDescription>
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="maxResponseTokens">Max Response Tokens</FieldLabel>
+        <Input
+          id="maxResponseTokens"
+          type="number"
+          placeholder="Example: 300"
+          autoComplete="off"
+          value={profile.maxResponseTokens ?? ""}
+          onChange={(e) =>
+            setProfile((c) => ({
+              ...c,
+              maxResponseTokens: parseInt(e.target.value),
+            }))
+          }
+        />
+        <FieldDescription className="text-sm">
+          Maximum number of tokens in the response (default: 300)
+        </FieldDescription>
+      </Field>
+      <div className="w-fit ml-auto">
+        <Button className="bg-blue-600 hover:bg-blue-500 text-white cursor-pointer">
+          <Save /> <span>Create Profile</span>
+        </Button>
+      </div>
+    </form>
+  );
+}

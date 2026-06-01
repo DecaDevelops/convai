@@ -4,6 +4,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ApiKeyContextProvider } from "@/features/apiKey/api-keys-context";
 import { CharacterContextProvider } from "@/features/character/character-context";
+import { InterferenceProfilesContextProvider } from "@/features/interference-profile/interference-profile-context";
 import { ModelContextProvider } from "@/features/model/model-context";
 import { PersonaContextProvider } from "@/features/persona/persona-context";
 import { ProviderContextProvider } from "@/features/provider/provider-context";
@@ -24,7 +25,11 @@ export default function App({ children }: PropsWithChildren) {
               <PersonaContextProvider>
                 <ApiKeyContextProvider>
                   <ProviderContextProvider>
-                    <ModelContextProvider>{children}</ModelContextProvider>
+                    <ModelContextProvider>
+                      <InterferenceProfilesContextProvider>
+                        {children}
+                      </InterferenceProfilesContextProvider>
+                    </ModelContextProvider>
                   </ProviderContextProvider>
                 </ApiKeyContextProvider>
               </PersonaContextProvider>
