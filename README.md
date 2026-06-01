@@ -59,7 +59,7 @@ An open-source chat front-end that is simplified for many users. ConvAI provides
 1. Clone the repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/DecaDevelops/convai
 cd convai
 ```
 
