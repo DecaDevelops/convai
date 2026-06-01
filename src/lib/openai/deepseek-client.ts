@@ -1,14 +1,5 @@
 import { characterSelect } from "@/features/character/character-type";
-import mustEnv from "../must-env";
-import createClient from "./create-client";
 import { PersonaSelect } from "@/features/persona/persona-types";
-import { Provider } from "@/features/provider/provider-class";
-
-export const deepseekClient = new Provider(
-  "https://api.deepseek.com",
-  mustEnv("DEEPSEEK_API_KEY"),
-);
-
 export const deepseekRules = (
   character: characterSelect,
   persona: PersonaSelect | null,
