@@ -39,6 +39,7 @@ export const Chat = sqliteTable("chats", {
   }),
   interferenceProfileId: text("interference_profile_id").references(
     () => InterferenceProfile.id,
+    { onDelete: "set null" },
   ),
   ...timestamps,
 });
