@@ -7,11 +7,15 @@ import { characterSelect } from "../character/character-type";
 import useCharacters from "../character/character-context";
 import usePersonas from "../persona/persona-context";
 import { useChatMutations } from "./use-chat-mutation";
+import { InterferenceProfileSelect } from "../interference-profile/interference-profile-types";
+import useInterferenceProfiles from "../interference-profile/interference-profile-context";
 
 type ChatActionState = {
   activePersona: PersonaSelect | null;
+  activeProfile: InterferenceProfileSelect | null;
   character: characterSelect | null;
-  setActivePersona: (personaId: string) => void;
+  setActivePersona: (personaId: string | null) => void;
+  setActiveProfile: (profileId: string | null) => void;
 };
 
 const ChatContext = createContext<ChatActionState | undefined>(undefined);
@@ -23,10 +27,16 @@ export function ChatContextProvider({ Chat, children }: props) {
   const chatId = Chat.id;
   const { mappedCharacters } = useCharacters();
   const { mappedPersonas } = usePersonas();
-  const { doUpdateActivePersona, isPending } = useChatMutations();
-  const [activePersonaId, setActivePersonaId] = useState(
-    Chat.personaId ?? null,
+  const { mappedInterferenceProfiles } = useInterferenceProfiles();
+  const { doUpdateActivePersona, doUpdateActiveProfile, isPending } =
+    useChatMutations();
+  const [activePersonaId, setActivePersonaId] = useState(Chat.personaId);
+  const [activeProfileId, setActiveProfileId] = useState(
+    Chat.interferenceProfileId,
   );
+  const activeProfile = activeProfileId
+    ? (mappedInterferenceProfiles.get(activeProfileId) ?? null)
+    : null;
 
   const character = Chat.characterId
     ? (mappedCharacters.get(Chat.characterId) ?? null)
@@ -41,12 +51,20 @@ export function ChatContextProvider({ Chat, children }: props) {
     // void update active persona
     doUpdateActivePersona({ chatId, personaId });
   };
+  const setActiveProfile = (profileId: string | null) => {
+    if (profileId == activeProfileId) return;
+
+    setActiveProfileId(profileId);
+    doUpdateActiveProfile({ chatId, profileId });
+  };
   return (
     <ChatContext.Provider
       value={{
         activePersona,
+        activeProfile,
         character,
         setActivePersona,
+        setActiveProfile,
       }}
     >
       {children}

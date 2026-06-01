@@ -14,7 +14,7 @@ export class InterferenceProfileFactory {
       maxResponseTokens: req.maxResponseTokens ?? 300,
       modelId: req.modelId,
       topK: req.topK ?? 70,
-      topP: Math.round(req.topP ?? 0.7 * 100),
+      topP: Math.round(req?.topP ? req.topP * 100 : 70),
       createdAt: date,
       updatedAt: date,
     };

@@ -18,8 +18,8 @@ import { Input } from "@/components/ui/input";
 const DEFAULT: InterferenceProfileRequest = {
   modelId: "",
   topK: 70,
-  topP: 40,
-  temperature: 0,
+  topP: 0.7,
+  temperature: 0.7,
   maxResponseTokens: 300,
 };
 
@@ -76,11 +76,14 @@ export default function InterferenceProfileForm({
           required
           id="temperature"
           type="number"
+          max={1.0}
+          min={0.0}
+          step={0.1}
           placeholder="Example: 70"
           autoComplete="off"
           value={profile.temperature}
           onChange={(e) =>
-            setProfile((c) => ({ ...c, temperature: parseInt(e.target.value) }))
+            setProfile((c) => ({ ...c, temperature: Number(e.target.value) }))
           }
         />
         <FieldDescription className="text-sm">
@@ -91,12 +94,15 @@ export default function InterferenceProfileForm({
         <FieldLabel htmlFor="topK">Top K</FieldLabel>
         <Input
           id="topK"
+          min={0}
+          max={100}
+          step={1}
           type="number"
           placeholder="Example: 70"
           autoComplete="off"
           value={profile.topK}
           onChange={(e) =>
-            setProfile((c) => ({ ...c, topK: parseInt(e.target.value) }))
+            setProfile((c) => ({ ...c, topK: Number(e.target.value) }))
           }
         />
         <FieldDescription className="text-sm">
@@ -107,12 +113,15 @@ export default function InterferenceProfileForm({
         <FieldLabel htmlFor="topP">Top P</FieldLabel>
         <Input
           id="topP"
+          min={0}
+          max={1.0}
+          step={0.1}
           type="number"
           placeholder="Example: 40"
           autoComplete="off"
           value={profile.topP}
           onChange={(e) =>
-            setProfile((c) => ({ ...c, topP: parseInt(e.target.value) }))
+            setProfile((c) => ({ ...c, topP: Number(e.target.value) }))
           }
         />
         <FieldDescription className="text-sm">
@@ -124,6 +133,7 @@ export default function InterferenceProfileForm({
         <Input
           id="maxResponseTokens"
           type="number"
+          min={10}
           placeholder="Example: 300"
           autoComplete="off"
           value={profile.maxResponseTokens ?? ""}

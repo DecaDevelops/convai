@@ -1,11 +1,6 @@
 "use client";
-import React, { SyntheticEvent, useState } from "react";
 import ChatHeader from "./components/ChatHeader";
-import { TextAreaWithLabel } from "@/components/textarea-with-label";
-import { Button } from "@/components/ui/button";
-import { useParams } from "next/navigation";
 import ChatBody from "./components/ChatBody";
-import useChattingMutations from "@/features/chatting/use-chatting-mutations";
 import ChatForm from "./components/ChatForm";
 
 export default function Client() {

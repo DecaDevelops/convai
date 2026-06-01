@@ -9,7 +9,7 @@ export class ProviderFactory {
       apiKeyId: req.apiKeyId,
       description: req.description,
       name: req.name,
-      path: req.name,
+      path: req.path,
       createdAt: date,
       updatedAt: date,
     };

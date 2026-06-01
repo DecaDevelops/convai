@@ -1,7 +1,10 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updateActivePersona } from "../chatting/chatting-action";
+import {
+  updateActivePersona,
+  updateActiveProfile,
+} from "../chatting/chatting-action";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { createNewChat } from "./chat-action";
@@ -33,10 +36,17 @@ export function useChatMutations() {
       onError: (err) => toast.error(err.message),
     });
 
-  const isPending = isPendingUpdatePersona;
+  const { mutate: doUpdateActiveProfile, isPending: isPendingUpdateProfile } =
+    useMutation({
+      mutationFn: updateActiveProfile,
+      onError: (err) => toast.error("interference profile has been changed"),
+    });
+
+  const isPending = isPendingUpdatePersona || isPendingUpdateProfile;
 
   return {
     doUpdateActivePersona,
+    doUpdateActiveProfile,
     doCreateChat,
     isPending,
   };

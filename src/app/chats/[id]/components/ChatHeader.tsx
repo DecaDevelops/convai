@@ -11,15 +11,18 @@ import {
 import useChat from "@/features/chat/chat-context";
 import { useChatMutations } from "@/features/chat/use-chat-mutation";
 import {
+  BrainCircuit,
   EllipsisVertical,
   MessageCirclePlus,
   VenetianMask,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import PersonaSelectSheet from "./PersonaSelect";
+import PersonaSelectSheet from "./PersonaSelectSheet";
+import InterferenceProfileSelectSheet from "./InterferenceProfileSelectSheet";
 const ChatHeaderDropdown: React.FC<{
   onOpenPersona: VoidFunction;
-}> = ({ onOpenPersona }) => {
+  onOpenProfile: VoidFunction;
+}> = ({ onOpenPersona, onOpenProfile }) => {
   const { doCreateChat } = useChatMutations();
   const { character } = useChat();
   return (
@@ -42,6 +45,9 @@ const ChatHeaderDropdown: React.FC<{
         <DropdownMenuItem onClick={onOpenPersona}>
           <VenetianMask /> <span>Change Persona</span>
         </DropdownMenuItem>
+        <DropdownMenuItem onClick={onOpenProfile}>
+          <BrainCircuit /> <span>Change interference profile</span>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
@@ -50,6 +56,7 @@ const ChatHeaderDropdown: React.FC<{
 export default function ChatHeader() {
   const { character } = useChat();
   const [openPersona, setOpenPersona] = useState(false);
+  const [openProfile, setOpenProfile] = useState(false);
   useEffect(() => {
     console.log(character);
   }, [character]);
@@ -60,12 +67,19 @@ export default function ChatHeader() {
   return (
     <>
       <PersonaSelectSheet open={openPersona} setOpen={setOpenPersona} />
+      <InterferenceProfileSelectSheet
+        open={openProfile}
+        setOpen={setOpenProfile}
+      />
       <div className="flex flex-row justify-between w-full bg-slate-900 p-2">
         <div className="flex flex-row">
           <PopoverImage url={image} height={72} width={72} />
           <span className="text-xl">{character?.name}</span>
         </div>
-        <ChatHeaderDropdown onOpenPersona={() => setOpenPersona(true)} />
+        <ChatHeaderDropdown
+          onOpenPersona={() => setOpenPersona(true)}
+          onOpenProfile={() => setOpenProfile(true)}
+        />
       </div>
     </>
   );

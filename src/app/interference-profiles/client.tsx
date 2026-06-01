@@ -36,9 +36,9 @@ const InterferenceProfileTableRow: React.FC<{
   return (
     <TableRow>
       <TableCell>{modelName ?? "N/A"}</TableCell>
-      <TableCell>{profile.temperature}</TableCell>
+      <TableCell>{profile.temperature / 100}</TableCell>
       <TableCell>{profile.topK}</TableCell>
-      <TableCell>{profile.topP}</TableCell>
+      <TableCell>{profile.topP / 100}</TableCell>
       <TableCell>{profile.maxResponseTokens ?? "N/A"}</TableCell>
       <TableCell>
         <Button
