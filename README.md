@@ -1,5 +1,6 @@
 # ConvAI
 
+![ConvAI Logo](assets/ConvAI_Logo.png)
 **Version: Alpha 0.0.1**
 ![ConvAI image](assets/ConvAI.png)
 
