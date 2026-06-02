@@ -65,7 +65,9 @@ export const Provider = sqliteTable("providers", {
   name: text(),
   description: text(),
   path: text(),
-  apiKeyId: text("api_key_id").references(() => ApiKey.id),
+  apiKeyId: text("api_key_id").references(() => ApiKey.id, {
+    onDelete: "set null",
+  }),
   ...timestamps,
 });
 
@@ -85,10 +87,19 @@ export const Model = sqliteTable("models", {
 
 export const InterferenceProfile = sqliteTable("interference_profile", {
   id: text().primaryKey(),
-  modelId: text("model_id").references(() => Model.id, { onDelete: "cascade" }),
+  modelId: text("model_id").references(() => Model.id, {
+    onDelete: "set null",
+  }),
   topK: int("top_k").notNull().default(70),
   topP: int("top_p").notNull().default(40),
   temperature: int("temperature").notNull(),
   maxResponseTokens: int("max_response_tokens").default(300),
+  ...timestamps,
+});
+
+export const Tag = sqliteTable("tags", {
+  id: int().primaryKey({ autoIncrement: true }),
+  name: text().notNull().unique(),
+  description: text(),
   ...timestamps,
 });

@@ -67,12 +67,12 @@ export default function CharacterForm({
         </CardHeader>
         <CardContent className="py-2 space-y-5">
           <div className="flex flex-col">
-            <div className="flex flex-col">
+            <div className="flex flex-col gap-2">
               <div className="w-64 h-64 relative mx-auto">
                 <Image src={image} fill alt="no upload" />
               </div>
               <Button
-                className="bg-blue-600 hover:bg-blue-500 text-white"
+                className="bg-blue-600 hover:bg-blue-500 text-white w-fit mx-auto"
                 type="button"
                 asChild
               >

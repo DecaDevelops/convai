@@ -58,3 +58,12 @@ export async function getChat(chatId: string) {
 
   return res ?? null;
 }
+
+export async function updateTimestampChat(chatId: string) {
+  await db
+    .update(Chat)
+    .set({
+      updatedAt: new Date(),
+    })
+    .where(eq(Chat.id, chatId));
+}

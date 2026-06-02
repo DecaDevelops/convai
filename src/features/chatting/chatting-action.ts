@@ -18,6 +18,7 @@ import { ChatCompletionMessageParam } from "openai/resources";
 import { ChatMessageFactory } from "../chat-message/ChatMessageFactory";
 import { Role } from "../chat-message/enum";
 import { Provider } from "@/features/provider/provider-class";
+import { updateTimestampChat } from "../chat/chat-action";
 function convertToChatMessageParam(
   message: ChatMessageSelect,
 ): ChatCompletionMessageParam {
@@ -149,5 +150,6 @@ export async function sendMessage({
     .values(toInsert)
     .returning();
 
+  void updateTimestampChat(chatId);
   return insertedRows;
 }

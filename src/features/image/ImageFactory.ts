@@ -1,6 +1,6 @@
 import sharp from "sharp";
 export class ImageFactory {
-  private static allowedFormats = ["jpef", "jpg", "png", "webp", "gif"];
+  private static allowedFormats = ["jpeg", "jpg", "png", "webp", "gif"];
   public static async Create(file: File): Promise<Buffer> {
     const buffer = Buffer.from(await file.arrayBuffer());
 

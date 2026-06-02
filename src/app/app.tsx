@@ -8,6 +8,7 @@ import { InterferenceProfilesContextProvider } from "@/features/interference-pro
 import { ModelContextProvider } from "@/features/model/model-context";
 import { PersonaContextProvider } from "@/features/persona/persona-context";
 import { ProviderContextProvider } from "@/features/provider/provider-context";
+import { TagContextProvider } from "@/features/tag/tag-context";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { PropsWithChildren } from "react";
 import { Toaster } from "sonner";
@@ -21,19 +22,21 @@ export default function App({ children }: PropsWithChildren) {
         <SidebarProvider>
           <TooltipProvider>
             <Toaster />
-            <CharacterContextProvider>
-              <PersonaContextProvider>
-                <ApiKeyContextProvider>
-                  <ProviderContextProvider>
-                    <ModelContextProvider>
-                      <InterferenceProfilesContextProvider>
-                        {children}
-                      </InterferenceProfilesContextProvider>
-                    </ModelContextProvider>
-                  </ProviderContextProvider>
-                </ApiKeyContextProvider>
-              </PersonaContextProvider>
-            </CharacterContextProvider>
+            <TagContextProvider>
+              <CharacterContextProvider>
+                <PersonaContextProvider>
+                  <ApiKeyContextProvider>
+                    <ProviderContextProvider>
+                      <ModelContextProvider>
+                        <InterferenceProfilesContextProvider>
+                          {children}
+                        </InterferenceProfilesContextProvider>
+                      </ModelContextProvider>
+                    </ProviderContextProvider>
+                  </ApiKeyContextProvider>
+                </PersonaContextProvider>
+              </CharacterContextProvider>
+            </TagContextProvider>
           </TooltipProvider>
         </SidebarProvider>
       </QueryClientProvider>
