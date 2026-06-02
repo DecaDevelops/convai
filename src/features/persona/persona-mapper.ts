@@ -21,4 +21,11 @@ export class PersonaMapper {
       image,
     };
   }
+
+  public static mapImportToRequest(persona: PersonaImport): PersonaRequest {
+    return {
+      name: persona.name,
+      description: persona.description,
+    };
+  }
 }

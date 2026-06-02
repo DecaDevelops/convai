@@ -8,7 +8,23 @@ import {
 } from "./character-action";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { onImportCharacter } from "./import/use-character-import";
+import { CharacterImport } from "./character-type";
+import { FormDataConverter } from "@/lib/form-data";
+import { CharacterMapper } from "./character-mapper";
+export const onImportCharacter = async (req: CharacterImport[]) => {
+  for (const character of req) {
+    const formData = FormDataConverter.toFormData(
+      CharacterMapper.importToRequest(character),
+    );
+    const image = character?.image?.[0];
+    if (image instanceof Blob) {
+      formData.append("file", image, "character_1.webp");
+    }
+
+    await createCharacter(formData);
+  }
+  return true;
+};
 
 export function useCharacterMutations() {
   const queryClient = useQueryClient();

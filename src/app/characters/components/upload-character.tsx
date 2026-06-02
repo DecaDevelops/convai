@@ -5,10 +5,6 @@ import { Import, Upload } from "lucide-react";
 import React, { ChangeEvent, memo, useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
-  CharacterImport,
-  CharacterStore,
-} from "../../../features/character/character-type";
-import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -21,8 +17,12 @@ import { useCharacterMutations } from "../../../features/character/use-character
 import MarkdownReact from "@/components/MarkdownReact";
 import { Badge } from "@/components/ui/badge";
 import { CharacterFactory } from "@/features/character/character-factory";
+import {
+  CharacterImport,
+  characterSelect,
+} from "@/features/character/character-type";
 const CharacterUploadCard: React.FC<{
-  character: CharacterStore;
+  character: CharacterImport;
 }> = memo(({ character }) => {
   const image = useMemo(() => {
     const _ = character.image?.[0] ?? null;
@@ -58,7 +58,7 @@ CharacterUploadCard.displayName = "CharacterUploadCard";
 
 export default function UploadCharacter() {
   const [open, setOpen] = useState(false);
-  const [characters, setCharacters] = useState<CharacterStore[]>([]);
+  const [characters, setCharacters] = useState<CharacterImport[]>([]);
   const onUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.currentTarget.files?.[0];
     if (!file) return toast.error("No file has been uploaded");
@@ -67,7 +67,7 @@ export default function UploadCharacter() {
 
     const json_file = await file.text();
 
-    const data = JSON.parse(json_file) as CharacterImport | CharacterImport[];
+    const data = JSON.parse(json_file) as characterSelect | characterSelect[];
     if (!Array.isArray(data)) {
       setCharacters([CharacterFactory.CreateImport(data)]);
     } else {

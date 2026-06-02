@@ -1,4 +1,5 @@
 import {
+  CharacterImport,
   characterInsert,
   characterRequest,
   characterSelect,
@@ -15,6 +16,19 @@ export class CharacterMapper {
       scenario: character.scenario,
       tags: character.tags,
       greeting: character.greeting,
+    };
+  }
+
+  public static importToRequest(req: CharacterImport): characterRequest {
+    return {
+      name: req.name,
+      personality: req.personality,
+      description: req.description,
+      exampleDialogue: req.exampleDialogue,
+      instructions: req.instructions,
+      scenario: req.scenario,
+      tags: req.tags,
+      greeting: req.greeting,
     };
   }
 
