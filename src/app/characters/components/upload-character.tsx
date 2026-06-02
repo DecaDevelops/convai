@@ -8,7 +8,6 @@ import {
   CharacterImport,
   CharacterStore,
 } from "../../../features/character/character-type";
-import { CharacterFactory } from "../../../features/character/character-factory";
 import {
   Dialog,
   DialogContent,
@@ -21,8 +20,7 @@ import Image from "next/image";
 import { useCharacterMutations } from "../../../features/character/use-character-mutations";
 import MarkdownReact from "@/components/MarkdownReact";
 import { Badge } from "@/components/ui/badge";
-import { CharacterImportFactory } from "@/features/character/import/character-import-factory";
-
+import { CharacterFactory } from "@/features/character/character-factory";
 const CharacterUploadCard: React.FC<{
   character: CharacterStore;
 }> = memo(({ character }) => {
@@ -71,9 +69,9 @@ export default function UploadCharacter() {
 
     const data = JSON.parse(json_file) as CharacterImport | CharacterImport[];
     if (!Array.isArray(data)) {
-      setCharacters([CharacterImportFactory.Create(data)]);
+      setCharacters([CharacterFactory.CreateImport(data)]);
     } else {
-      setCharacters(data.map((x) => CharacterImportFactory.Create(x)));
+      setCharacters(data.map((x) => CharacterFactory.CreateImport(x)));
     }
     setOpen(true);
   };

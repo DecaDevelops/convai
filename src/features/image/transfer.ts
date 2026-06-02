@@ -1,6 +1,6 @@
+"use server";
 import fs from "node:fs/promises";
 import path from "path";
-import "server-only";
 import { v4 as uuidv4 } from "uuid";
 
 const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");

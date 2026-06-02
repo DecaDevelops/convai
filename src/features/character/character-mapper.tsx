@@ -2,7 +2,6 @@ import {
   characterInsert,
   characterRequest,
   characterSelect,
-  CharacterStore,
 } from "./character-type";
 
 export class CharacterMapper {
@@ -16,19 +15,6 @@ export class CharacterMapper {
       scenario: character.scenario,
       tags: character.tags,
       greeting: character.greeting,
-    };
-  }
-
-  public static importToRequest(character: CharacterStore): characterRequest {
-    return {
-      name: character.name,
-      greeting: character.greeting,
-      description: character.description,
-      personality: character.personality,
-      exampleDialogue: character.exampleDialogue,
-      instructions: character.instructions,
-      scenario: character.scenario,
-      tags: character.tags,
     };
   }
 

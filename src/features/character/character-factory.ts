@@ -1,12 +1,11 @@
 import { encodeFileBase64 } from "../image/transfer";
 import {
-  CharacterImport,
   characterInsert,
   characterRequest,
   characterSelect,
-  CharacterStore,
 } from "./character-type";
 import { v4 as uuidv4 } from "uuid";
+import { CharacterImport } from "./import/character-import-types";
 export class CharacterFactory {
   public static Create(character: characterRequest): characterInsert {
     const date = new Date();
@@ -34,6 +33,20 @@ export class CharacterFactory {
       const base64 = await encodeFileBase64(image);
       images.push(`data:image/webp;base64,${base64}`);
     }
+    return {
+      ...character,
+      image: images,
+    };
+  }
+
+  public static CreateImport(character: characterSelect): CharacterImport {
+    const images: Blob[] = [];
+    for (const image of character.image) {
+      const [, base64] = image.split(",");
+      const buffer = Buffer.from(base64, "base64");
+      images.push(new Blob([buffer], { type: "image/webp" }));
+    }
+
     return {
       ...character,
       image: images,
