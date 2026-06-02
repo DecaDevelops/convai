@@ -11,6 +11,7 @@ import { memo, useState } from "react";
 import { characterSelect } from "./character-type";
 import Image from "next/image";
 import {
+  Download,
   EllipsisVertical,
   MessageCirclePlus,
   Pencil,
@@ -34,6 +35,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { safeFileName } from "@/lib/safe-name";
+import ConvertToJson from "@/lib/json-func";
+import { exportCharacter } from "./export/character-export-action";
 type props = {
   character: characterSelect;
   onDelete: VoidFunction;
@@ -60,6 +64,19 @@ function CharacterCard({
     } catch {
       //do something on delete
     }
+  };
+
+  const onExportCharacter = async () => {
+    const blob = await exportCharacter(character.id);
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${safeFileName(character.name)}.json`;
+    a.click();
+
+    URL.revokeObjectURL(url);
   };
   return (
     <>
@@ -124,6 +141,9 @@ function CharacterCard({
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setOpen(true)}>
                 <Trash2 /> <span>Delete Character</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={onExportCharacter}>
+                <Download /> <span>Copy character to json</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

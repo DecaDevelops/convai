@@ -15,3 +15,21 @@ export type characterRequest = Pick<
   | "instructions"
   | "tags"
 >;
+
+type CharacterExport = Pick<
+  characterSelect,
+  | "id"
+  | "description"
+  | "name"
+  | "greeting"
+  | "exampleDialogue"
+  | "instructions"
+  | "personality"
+  | "scenario"
+  | "tags"
+  | "updatedAt"
+  | "createdAt"
+>;
+
+export type CharacterStore = CharacterExport & { image: Blob[] };
+export type CharacterImport = CharacterExport & { image: string[] };

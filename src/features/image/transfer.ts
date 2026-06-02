@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");
 const DELETE_DIR = path.join(process.cwd(), "public");
+const DIR = path.join(process.cwd(), "public");
 export async function transferFile(buffer: Buffer, destination: string) {
   try {
     const uploadPath = path.join(UPLOAD_DIR, destination);
@@ -29,4 +30,11 @@ export async function deleteFile(fileName: string) {
   } catch (error) {
     console.error(error);
   }
+}
+
+export async function encodeFileBase64(fileName: string) {
+  const fileDestination = path.join(DIR, fileName);
+  const imageBuffer = await fs.readFile(fileDestination);
+  const base64 = imageBuffer.toString("base64");
+  return base64;
 }

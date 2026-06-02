@@ -11,6 +11,7 @@ import CharacterCard from "@/features/character/character-card";
 import { toast } from "sonner";
 import { createChat, createNewChat } from "@/features/chat/chat-action";
 import { useRouter } from "next/navigation";
+import UploadCharacter from "@/app/characters/components/upload-character";
 
 export default function Client() {
   const { push } = useRouter();
@@ -29,6 +30,7 @@ export default function Client() {
   });
   return (
     <>
+      <UploadCharacter />
       {isPending ? (
         "loading..."
       ) : (

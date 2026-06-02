@@ -12,7 +12,7 @@ import { PersonaSelect } from "./persona-types";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { EllipsisVertical, Pencil, Trash2 } from "lucide-react";
+import { Download, EllipsisVertical, Pencil, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,6 +29,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { usePersonaMutations } from "./use-persona-mutations";
+import { exportPersona } from "./export/persona-export-action";
+import { safeFileName } from "@/lib/safe-name";
 type props = {
   persona: PersonaSelect;
 };
@@ -42,6 +44,16 @@ function PersonaCard({ persona }: props) {
     } catch {
       //do something on error
     }
+  };
+
+  const onExportPersona = async () => {
+    const blob = await exportPersona(persona.id);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${safeFileName(persona.name)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
   const [open, setOpen] = useState(false);
   return (
@@ -102,6 +114,9 @@ function PersonaCard({ persona }: props) {
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setOpen(true)}>
                 <Trash2 /> <span>Delete Persona</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={onExportPersona}>
+                <Download /> <span>Export Persona</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

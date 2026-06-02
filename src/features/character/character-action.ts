@@ -8,8 +8,6 @@ import { eq } from "drizzle-orm";
 import { deleteFile, transferFile } from "../image/transfer";
 import { ImageFactory } from "../image/ImageFactory";
 import { FormDataConverter } from "@/lib/form-data";
-import { CharacterModel } from "./character-model";
-import { ValueOf } from "next/dist/shared/lib/constants";
 import { CharacterMapper } from "./character-mapper";
 
 export async function createCharacter(formData: FormData) {

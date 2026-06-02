@@ -37,6 +37,8 @@ export default function TagForm({
       />
       <TextAreaWithLabel
         label="Description"
+        value={tag.description ?? ""}
+        onChange={(e) => setTag((c) => ({ ...c, description: e.target.value }))}
         className="min-h-32 max-h-96 resize-none"
       />
       <div className="w-fit ml-auto">

@@ -2,7 +2,6 @@ import { createContext, PropsWithChildren, useContext } from "react";
 import { characterSelect } from "./character-type";
 import { useQuery } from "@tanstack/react-query";
 import { getCharacters } from "./character-action";
-import { useChatMutations } from "../chat/use-chat-mutation";
 
 type CharacterActionState = {
   characters: characterSelect[];
