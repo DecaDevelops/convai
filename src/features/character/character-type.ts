@@ -14,6 +14,4 @@ export type characterRequest = Pick<
   | "exampleDialogue"
   | "instructions"
   | "tags"
-> & {
-  uploads: File[];
-};
+>;

@@ -8,12 +8,15 @@ import { eq } from "drizzle-orm";
 import { deleteFile, transferFile } from "../image/transfer";
 import { ImageFactory } from "../image/ImageFactory";
 import { FormDataConverter } from "@/lib/form-data";
+import { CharacterModel } from "./character-model";
+import { ValueOf } from "next/dist/shared/lib/constants";
+import { CharacterMapper } from "./character-mapper";
 
 export async function createCharacter(formData: FormData) {
   const data = FormDataConverter.fromFormData(formData);
 
   // Extract files from FormData
-  const uploads = FormDataConverter.getFiles(formData, "uploads");
+  const upload = formData.get("file");
 
   const req: characterRequest = {
     name: (data.name as string) || "",
@@ -24,16 +27,14 @@ export async function createCharacter(formData: FormData) {
     instructions: (data.instructions as string) || "",
     scenario: (data.scenario as string) || "",
     tags: Array.isArray(data.tags) ? data.tags : [],
-    uploads,
   };
 
   const character = CharacterFactory.Create(req);
-  for (const upload of req.uploads) {
+  if (upload instanceof File) {
     const fileName = await transferFile(
       await ImageFactory.Create(upload),
       "characters",
     );
-
     character.image.push(fileName);
   }
   await db.insert(Character).values(character);
@@ -44,14 +45,49 @@ export async function getCharacters() {
   return await db.query.Character.findMany();
 }
 
+export async function getCharacter(id: string) {
+  const [character] = await db
+    .select()
+    .from(Character)
+    .where(eq(Character.id, id))
+    .limit(1);
+
+  return character ?? null;
+}
+
 export async function updateCharacter({
   id,
-  req,
+  formData,
 }: {
   id: string;
-  req: characterRequest;
+  formData: FormData;
 }) {
-  await db.update(Character).set(req).where(eq(Character.id, id));
+  const data = FormDataConverter.fromFormData(formData) as {
+    [K in keyof characterRequest]: characterRequest[K];
+  };
+  const [character] = await db
+    .select()
+    .from(Character)
+    .where(eq(Character.id, id))
+    .limit(1);
+
+  if (!character) {
+    throw new Error(`Character with id ${id} not found`);
+  }
+
+  const upload = formData.get("file");
+
+  const updatedCharacter = CharacterMapper.updateSelect(character, data);
+  console.log(upload);
+  if (upload instanceof File) {
+    const fileName = await transferFile(
+      await ImageFactory.Create(upload),
+      "characters",
+    );
+    updatedCharacter.image = [fileName];
+    await deleteFile(character.image?.[0]);
+  }
+  await db.update(Character).set(updatedCharacter).where(eq(Character.id, id));
   return true;
 }
 

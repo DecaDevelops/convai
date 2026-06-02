@@ -10,6 +10,9 @@ import {
 import { memo } from "react";
 import { PersonaSelect } from "./persona-types";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { Pencil } from "lucide-react";
 type props = {
   persona: PersonaSelect;
 };
@@ -33,7 +36,13 @@ function PersonaCard({ persona }: props) {
           {persona.description}
         </CardDescription>
       </CardContent>
-      <CardFooter></CardFooter>
+      <CardFooter className="mt-auto">
+        <Button asChild>
+          <Link href={`/personas/edit/${persona.id}`}>
+            <Pencil /> <span>Edit Persona</span>
+          </Link>
+        </Button>
+      </CardFooter>
     </Card>
   );
 }

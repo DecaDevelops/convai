@@ -1,6 +1,6 @@
 "use client";
 import React, { useMemo, useState } from "react";
-import { characterRequest } from "./character-type";
+import { characterRequest, characterSelect } from "./character-type";
 import {
   Card,
   CardContent,
@@ -15,11 +15,11 @@ import { TextAreaWithLabel } from "@/components/textarea-with-label";
 import Image from "next/image";
 import { Label } from "@/components/ui/label";
 import { FormDataConverter } from "@/lib/form-data";
+import { CharacterMapper } from "./character-mapper";
 const DEFAULT_CHARACTER: characterRequest = {
   name: "",
   greeting: "",
   personality: "",
-  uploads: [],
   description: "",
   exampleDialogue: "",
   instructions: "",
@@ -29,25 +29,25 @@ const DEFAULT_CHARACTER: characterRequest = {
 type props = {
   onSubmitChanges: (formData: FormData) => void;
   isPending: boolean;
+  _character?: characterSelect;
 };
-export default function CharacterForm({ onSubmitChanges }: props) {
-  const [character, setCharacter] =
-    useState<characterRequest>(DEFAULT_CHARACTER);
+export default function CharacterForm({
+  onSubmitChanges,
+  isPending,
+  _character,
+}: props) {
+  const [character, setCharacter] = useState<characterRequest>(
+    _character ? CharacterMapper.toRequest(_character) : DEFAULT_CHARACTER,
+  );
+  const [upload, setUpload] = useState<File | null>(null);
   const [open, setOpen] = useState(false);
+
   const image = useMemo(() => {
-    const upload = character.uploads?.[0];
+    if (!upload && _character?.image?.[0]) return _character.image[0];
     if (!upload) return "/images/upload.png";
 
     return URL.createObjectURL(upload);
-  }, [character.uploads]);
-
-  const otherImages = useMemo(() => {
-    if (!(character.uploads.length > 1)) return [];
-
-    const slicedArray = character.uploads.slice(1);
-
-    return slicedArray.map((x) => URL.createObjectURL(x));
-  }, [character.uploads]);
+  }, [upload, _character?.image]);
 
   return (
     <Card className="w-xl mx-auto">
@@ -55,6 +55,10 @@ export default function CharacterForm({ onSubmitChanges }: props) {
         onSubmit={(e) => {
           e.preventDefault();
           const formData = FormDataConverter.toFormData(character);
+          if (upload instanceof File) {
+            formData.append("file", upload);
+          }
+          console.log(formData);
           onSubmitChanges(formData);
         }}
       >
@@ -73,29 +77,19 @@ export default function CharacterForm({ onSubmitChanges }: props) {
                 asChild
               >
                 <Label>
-                  <Upload /> <span>Upload image</span>
+                  <Upload /> <span>Set main image</span>
                   <input
                     type="file"
                     hidden
                     onChange={(e) => {
-                      const files = e.currentTarget.files;
-                      if (!files) return;
+                      const file = e.currentTarget.files?.[0];
+                      if (!file) return;
 
-                      setCharacter((c) => ({
-                        ...c,
-                        uploads: [...c.uploads, ...files],
-                      }));
+                      setUpload(file);
                     }}
                   />
                 </Label>
               </Button>
-            </div>
-            <div className="flex flex-wrap items-center gap-1">
-              {otherImages.map((x, key) => (
-                <div key={key} className="shrink-0">
-                  <Image src={x} alt="" width={64} height={64} />
-                </div>
-              ))}
             </div>
           </div>
           <InputWithLabel

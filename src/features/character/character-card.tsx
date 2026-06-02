@@ -10,7 +10,12 @@ import {
 import { memo } from "react";
 import { characterSelect } from "./character-type";
 import Image from "next/image";
-import { EllipsisVertical, MessageCirclePlus, Trash2 } from "lucide-react";
+import {
+  EllipsisVertical,
+  MessageCirclePlus,
+  Pencil,
+  Trash2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -19,6 +24,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useCharacterMutations } from "./use-character-mutations";
+import Link from "next/link";
 type props = {
   character: characterSelect;
   onDelete: VoidFunction;
@@ -84,6 +90,11 @@ function CharacterCard({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-full">
+              <DropdownMenuItem asChild>
+                <Link href={`/characters/edit/${character.id}`}>
+                  <Pencil /> <span>Edit Character</span>
+                </Link>
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={() => doDeleteCharacter(character.id)}>
                 <Trash2 /> <span>Delete Character</span>
               </DropdownMenuItem>

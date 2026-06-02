@@ -13,24 +13,69 @@ export async function getPersonas() {
   return await db.query.Persona.findMany();
 }
 
+export async function getPersona(id: string) {
+  const [persona] = await db
+    .select()
+    .from(Persona)
+    .where(eq(Persona.id, id))
+    .limit(1);
+
+  return persona ?? null;
+}
+
 export async function createPersona(formData: FormData) {
   const data = FormDataConverter.fromFormData(formData);
-  const upload = FormDataConverter.getFiles(formData, "uploads")?.[0] || null;
+  const upload = formData.get("upload");
   const request: PersonaRequest = {
     name: (data.name as string) || "",
     description: data.description as string,
-    uploads: null,
   };
   const persona = PersonaFactory.Create(request);
 
-  const fileName = await transferFile(
-    await ImageFactory.Create(upload),
-    "personas",
-  );
+  if (upload instanceof File) {
+    const fileName = await transferFile(
+      await ImageFactory.Create(upload),
+      "personas",
+    );
+    persona.image = fileName;
+  }
 
-  persona.image = fileName;
   await db.insert(Persona).values(persona);
 
+  return true;
+}
+
+export async function updatePersona({
+  id,
+  formData,
+}: {
+  id: string;
+  formData: FormData;
+}) {
+  const data = FormDataConverter.fromFormData(formData) as {
+    [K in keyof PersonaRequest]: PersonaRequest[K];
+  };
+  const upload = formData.get("upload");
+  const [persona] = await db
+    .select()
+    .from(Persona)
+    .where(eq(Persona.id, id))
+    .limit(1);
+
+  if (!persona) throw new Error("Persona not found");
+
+  const updatedPersona = PersonaFactory.Update(persona, data);
+  if (upload instanceof File) {
+    const fileName = await transferFile(
+      await ImageFactory.Create(upload),
+      "personas",
+    );
+    updatedPersona.image = fileName;
+    if (persona.image) {
+      await deleteFile(persona.image);
+    }
+  }
+  await db.update(Persona).set(updatedPersona).where(eq(Persona.id, id));
   return true;
 }
 

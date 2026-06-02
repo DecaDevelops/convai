@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { PersonaRequest } from "./persona-types";
+import { PersonaRequest, PersonaSelect } from "./persona-types";
 import { FormDataConverter } from "@/lib/form-data";
 import { InputWithLabel } from "@/components/input-with-label";
 import { TextAreaWithLabel } from "@/components/textarea-with-label";
@@ -16,17 +16,17 @@ import { Button } from "@/components/ui/button";
 import { Plus, Upload } from "lucide-react";
 import Image from "next/image";
 import { Label } from "@/components/ui/label";
+import { PersonaMapper } from "./persona-mapper";
 
 type props = {
   onSendForm: (req: FormData) => void;
   isPending: boolean;
-  _persona?: PersonaRequest;
+  _persona?: PersonaSelect;
 };
 
 const EMPTY_REQUEST: PersonaRequest = {
   name: "",
   description: "",
-  uploads: null,
 };
 
 export default function PersonaForm({
@@ -34,13 +34,17 @@ export default function PersonaForm({
   onSendForm,
   _persona,
 }: props) {
-  const [persona, setPersona] = useState(_persona ?? EMPTY_REQUEST);
+  const [persona, setPersona] = useState(
+    _persona ? PersonaMapper.mapToRequest(_persona) : EMPTY_REQUEST,
+  );
+  const [upload, setUpload] = useState<File | null>(null);
 
   const image = useMemo(() => {
-    if (!persona.uploads) return "/images/upload.png";
+    if (!upload && _persona?.image) return _persona.image;
+    if (!upload) return "/images/upload.png";
 
-    return URL.createObjectURL(persona.uploads);
-  }, [persona.uploads]);
+    return URL.createObjectURL(upload);
+  }, [_persona, upload]);
   return (
     <Card>
       <CardHeader>
@@ -51,6 +55,10 @@ export default function PersonaForm({
           e.preventDefault();
           if (isPending) return;
           const formData = FormDataConverter.toFormData(persona);
+
+          if (upload instanceof File) {
+            formData.append("upload", upload);
+          }
           return onSendForm(formData);
         }}
       >
@@ -71,7 +79,7 @@ export default function PersonaForm({
                   type="file"
                   onChange={(e) => {
                     const files = e.currentTarget.files;
-                    setPersona((p) => ({ ...p, uploads: files?.[0] ?? null }));
+                    setUpload(files?.[0] ?? null);
                   }}
                 />
               </Label>
