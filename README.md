@@ -25,9 +25,9 @@ An open-source chat front-end that is simplified for many users. ConvAI provides
 - ✅ **Interference Profiles**: Fine-tune AI responses with temperature, top-k, top-p, and token limits
 - ✅ **Image Support**: Upload and display images for characters and personas
 - ✅ **Theme Support**: Dark and light mode themes
+- ✅ **Delete/Update Characters & Personas**
 
 ## 🚧 Known Limitations
-
 - ❌ **No Lorebook Support**: World info and lore management not yet implemented
 - ❌ **No Group Chats**: Only 1-on-1 conversations are currently supported
 - ❌ **No Message Editing**: Cannot edit or regenerate individual messages yet
@@ -35,8 +35,6 @@ An open-source chat front-end that is simplified for many users. ConvAI provides
 ## 🗺️ Roadmap
 
 ### Near Future
-
-- [ ] **Delete/Update Characters & Personas**: Right now it is not fully implemented yet
 - [ ] **Delete/Update Message**: To allow the removal of stuff
 - [ ] **Continue Message**: Extend AI responses that were cut off
 - [ ] **Refresh/Regenerate Message**: Regenerate the last AI response
