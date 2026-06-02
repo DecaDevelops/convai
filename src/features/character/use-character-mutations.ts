@@ -24,15 +24,18 @@ export function useCharacterMutations() {
     },
   );
 
-  const { mutate: doDeleteCharacter, isPending: isPendingDelete } = useMutation(
-    {
-      mutationFn: deleteCharacter,
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["characters"] });
-      },
-      onError: (err) => toast.error(err.message),
+  const {
+    mutate: doDeleteCharacter,
+    mutateAsync: doDeleteCharacterAsync,
+    isPending: isPendingDelete,
+  } = useMutation({
+    mutationFn: deleteCharacter,
+    onSuccess: () => {
+      toast.success("Character has been deleted");
+      queryClient.invalidateQueries({ queryKey: ["characters"] });
     },
-  );
+    onError: (err) => toast.error(err.message),
+  });
   const { mutate: doUpdateCharacter, isPending: isPendingUpdate } = useMutation(
     {
       mutationFn: updateCharacter,
@@ -50,6 +53,7 @@ export function useCharacterMutations() {
     doCreateCharacter,
     doUpdateCharacter,
     doDeleteCharacter,
+    doDeleteCharacterAsync,
     isPendingCharacterMutate,
   };
 }

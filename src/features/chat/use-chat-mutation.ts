@@ -7,7 +7,7 @@ import {
 } from "../chatting/chatting-action";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { createNewChat } from "./chat-action";
+import { createChat, createNewChat } from "./chat-action";
 
 export function useChatMutations() {
   const queryClient = useQueryClient();
@@ -19,6 +19,13 @@ export function useChatMutations() {
     // queryClient.invalidateQueries({ queryKey: ["chats"] });
   };
   const { mutate: doCreateChat } = useMutation({
+    mutationFn: createChat,
+    onSuccess: (data) => {
+      push(`/chats/${data}`);
+    },
+    onError: (err) => toast.error(err.message),
+  });
+  const { mutate: doCreateNewChat } = useMutation({
     mutationFn: createNewChat,
     onSuccess: (data) => {
       toast.success(`chat has been created, redirecting`);
@@ -48,6 +55,7 @@ export function useChatMutations() {
     doUpdateActivePersona,
     doUpdateActiveProfile,
     doCreateChat,
+    doCreateNewChat,
     isPending,
   };
 }

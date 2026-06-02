@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { memo } from "react";
+import { memo, useState } from "react";
 import { characterSelect } from "./character-type";
 import Image from "next/image";
 import {
@@ -25,6 +25,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useCharacterMutations } from "./use-character-mutations";
 import Link from "next/link";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 type props = {
   character: characterSelect;
   onDelete: VoidFunction;
@@ -42,45 +51,63 @@ function CharacterCard({
   startNewChat,
 }: props) {
   const image = character.image?.[0] ?? "/images/upload.png";
-  const { doDeleteCharacter } = useCharacterMutations();
+  const [open, setOpen] = useState(false);
+  const { doDeleteCharacterAsync } = useCharacterMutations();
+  const onConfirmDelete = async () => {
+    try {
+      await doDeleteCharacterAsync(character.id);
+      setOpen(false);
+    } catch {
+      //do something on delete
+    }
+  };
   return (
     <>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete {character.name}</DialogTitle>
+          </DialogHeader>
+          <DialogDescription>
+            Are you sure you want to delete this character? This cannot be
+            reverted
+          </DialogDescription>
+          <DialogFooter>
+            <Button onClick={onConfirmDelete}>
+              <Trash2 /> <span>Delete</span>
+            </Button>
+            <DialogClose asChild>
+              <Button variant={"outline"} className="ml-auto">
+                Cancel
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       <Card className="w-xs">
         <CardHeader>
-          <CardTitle className="text-center text-2xl">
-            {character.name}
-          </CardTitle>
-          <div className="relative w-32 h-32 mx-auto">
-            <Image
-              src={image}
-              fill
-              unoptimized
-              loading="eager"
-              style={{ objectFit: "cover" }}
-              alt={character.name}
-            />
-          </div>
+          <Link href={`/character/${character.id}`}>
+            <CardTitle className="text-center text-2xl">
+              {character.name}
+            </CardTitle>
+            <div className="relative w-32 h-32 mx-auto">
+              <Image
+                src={image}
+                fill
+                unoptimized
+                loading="eager"
+                style={{ objectFit: "cover" }}
+                alt={character.name}
+              />
+            </div>
+          </Link>
         </CardHeader>
-        <CardContent>
-          <CardDescription className="line-clamp-4 text-center">
-            {character.description}
-          </CardDescription>
-          <div className="flex flex-col py-2 gap-2">
-            <Button
-              className="mx-auto cursor-pointer"
-              variant={"outline"}
-              onClick={startChat}
-            >
-              <MessageCirclePlus /> <span>Start/Continue chat</span>
-            </Button>
-            <Button
-              className="mx-auto"
-              onClick={startNewChat}
-              variant={"outline"}
-            >
-              <MessageCirclePlus /> <span>Create new chat</span>
-            </Button>
-          </div>
+        <CardContent className="h-32">
+          <Link href={`/character/${character.id}`}>
+            <CardDescription className="line-clamp-4 text-center">
+              {character.description}
+            </CardDescription>
+          </Link>
         </CardContent>
         <CardFooter className="mt-auto">
           <DropdownMenu>
@@ -95,7 +122,7 @@ function CharacterCard({
                   <Pencil /> <span>Edit Character</span>
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => doDeleteCharacter(character.id)}>
+              <DropdownMenuItem onClick={() => setOpen(true)}>
                 <Trash2 /> <span>Delete Character</span>
               </DropdownMenuItem>
             </DropdownMenuContent>

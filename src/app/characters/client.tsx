@@ -32,7 +32,7 @@ export default function Client() {
       {isPending ? (
         "loading..."
       ) : (
-        <div className="flex flex-wrap">
+        <div className="flex flex-wrap items-center justify-center gap-2">
           {characters.map((x) => (
             <CharacterCard
               key={x.id}
@@ -41,7 +41,7 @@ export default function Client() {
               isFavorite={false}
               onDelete={() => {}}
               startChat={() => startChat({ characterId: x.id })}
-              startNewChat={() => startNewChat(x.id)}
+              startNewChat={() => startNewChat({ characterId: x.id })}
             />
           ))}
         </div>

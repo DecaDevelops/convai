@@ -21,19 +21,20 @@ export function usePersonaMutations() {
     },
     onError: (err) => toast.error(err.message),
   });
-  const { mutate: doDeletePersona, isPending: isPendingDelete } = useMutation({
-    mutationFn: deletePersona,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["personas"] });
-      toast.success("persona has been deleted");
-    },
-    onError: (err) => toast.error(err.message),
-  });
+  const { mutateAsync: doDeletePersonaAsync, isPending: isPendingDelete } =
+    useMutation({
+      mutationFn: deletePersona,
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["personas"] });
+        toast.success("persona has been deleted");
+      },
+      onError: (err) => toast.error(err.message),
+    });
 
   const isPendingPersona = isPendingDelete || isCreatePersona;
 
   return {
-    doDeletePersona,
+    doDeletePersonaAsync,
     doCreatePersona,
     isPendingPersona,
   };

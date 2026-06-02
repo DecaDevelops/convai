@@ -1,5 +1,9 @@
 import Client from "./client";
 
 export default async function Page() {
-  return <Client />;
+  return (
+    <div className="my-5">
+      <Client />
+    </div>
+  );
 }

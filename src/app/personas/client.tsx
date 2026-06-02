@@ -6,7 +6,7 @@ export default function Client() {
   const { personas } = usePersonas();
   return (
     <div className="my-5">
-      <div className="flex flex-wrap justify-center flex-1">
+      <div className="flex flex-wrap justify-center flex-1 gap-3">
         {personas.map((x) => (
           <PersonaCard key={x.id} persona={x} />
         ))}
