@@ -1,10 +1,11 @@
 "use client";
 import MarkdownReact from "@/components/MarkdownReact";
 import PopoverImage from "@/components/PopoverImage";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -12,15 +13,14 @@ import useChatMessages from "@/features/chat-message/context";
 import { ChatMessageSelect } from "@/features/chat-message/types";
 import useChat from "@/features/chat/chat-context";
 import useChattingMutations from "@/features/chatting/use-chatting-mutations";
-import { Loader2, LoaderPinwheel } from "lucide-react";
-import Image from "next/image";
+import { LoaderPinwheel, MessageCirclePlus } from "lucide-react";
 import React, { memo, useEffect, useRef } from "react";
 
 const ChatMessageCard: React.FC<{
   message: ChatMessageSelect;
 }> = memo(({ message }) => {
-  const { activePersona, character } = useChat();
-
+  const { activePersona, character, chatId } = useChat();
+  const { doContinueMessage, isPending } = useChattingMutations();
   const name =
     message.role == 0
       ? (activePersona?.name ?? "You")
@@ -44,6 +44,18 @@ const ChatMessageCard: React.FC<{
       <CardContent>
         <MarkdownReact content={content} />
       </CardContent>
+      <CardFooter>
+        <Button
+          variant={"ghost"}
+          size={"icon-xs"}
+          onClick={() => {
+            if (isPending) return;
+            doContinueMessage(chatId);
+          }}
+        >
+          <MessageCirclePlus />
+        </Button>
+      </CardFooter>
     </Card>
   );
 });

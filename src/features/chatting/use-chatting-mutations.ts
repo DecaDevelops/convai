@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { sendMessage } from "./chatting-action";
+import { continueMessage, sendMessage } from "./chatting-action";
 import { ChatMessageSelect } from "../chat-message/types";
 import { toast } from "sonner";
 import { Role } from "../chat-message/enum";
@@ -80,8 +80,27 @@ export default function useChattingMutations() {
     },
   });
 
-  const isPending = isPendingSendMessage;
+  const { mutate: doContinueMessage, isPending: isPendingContinue } =
+    useMutation({
+      mutationFn: continueMessage,
+      onSuccess: async (chatMessage, chatId) => {
+        await queryClient.cancelQueries({
+          queryKey: ["chat_messages", chatId],
+        });
+        queryClient.setQueryData<ChatMessageSelect[]>(
+          ["chat_messages", chatId],
+          (old) => {
+            if (!old) return old;
+
+            return [...old, chatMessage];
+          },
+        );
+      },
+    });
+
+  const isPending = isPendingSendMessage || isPendingContinue;
   return {
+    doContinueMessage,
     doSendMessage,
     doSendMessageAsync,
     isPending,

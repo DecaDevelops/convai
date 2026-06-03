@@ -11,6 +11,7 @@ import { InterferenceProfileSelect } from "../interference-profile/interference-
 import useInterferenceProfiles from "../interference-profile/interference-profile-context";
 
 type ChatActionState = {
+  chatId: string;
   activePersona: PersonaSelect | null;
   activeProfile: InterferenceProfileSelect | null;
   character: characterSelect | null;
@@ -60,6 +61,7 @@ export function ChatContextProvider({ Chat, children }: props) {
   return (
     <ChatContext.Provider
       value={{
+        chatId,
         activePersona,
         activeProfile,
         character,
