@@ -2,14 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
   Table,
   TableBody,
   TableCaption,
@@ -19,22 +11,54 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import useApiKeys from "@/features/apiKey/api-keys-context";
-import ApiKeysForm from "@/features/apiKey/api-keys-form";
+import {
+  CreateApiKeyDialog,
+  DeleteApiKeyDialog,
+  UpdateApiKeyDialog,
+} from "@/features/apiKey/api-keys-dialogs";
 import useApiKeysMutations from "@/features/apiKey/api-keys-mutations";
-import { ApiKeyRequest, ApiKeysSelect } from "@/features/apiKey/api-keys-types";
-import { Plus, Trash2 } from "lucide-react";
-import React, { memo, useState } from "react";
+import { ApiKeysSelect } from "@/features/apiKey/api-keys-types";
+import { setClipboard } from "@/lib/write-to-clipboard";
+import { Eye, EyeClosed, Pencil, Plus, Trash2 } from "lucide-react";
+import React, { memo, useMemo, useState } from "react";
 
 const ApiKeyRow: React.FC<{
   apiKey: ApiKeysSelect;
   onDelete: VoidFunction;
-}> = memo(({ apiKey, onDelete }) => {
+  onEdit: VoidFunction;
+}> = memo(({ apiKey, onDelete, onEdit }) => {
+  const [show, setShow] = useState(false);
+
+  const showValue = useMemo(() => {
+    if (!show) return "**********";
+
+    return apiKey.value;
+  }, [show, apiKey.value]);
   return (
     <TableRow>
       <TableCell>{apiKey.name}</TableCell>
       <TableCell>{apiKey.description}</TableCell>
-      <TableCell>**********</TableCell>
+      <TableCell className="flex flex-row items-center">
+        <span
+          className="w-fit cursor-pointer"
+          onClick={() => setClipboard(apiKey.value)}
+        >
+          {showValue}
+        </span>
+        <div className="w-fit h-fit ml-auto mb-auto">
+          <Button
+            onClick={() => setShow(!show)}
+            size={"icon"}
+            variant={"ghost"}
+          >
+            {show ? <EyeClosed /> : <Eye />}
+          </Button>
+        </div>
+      </TableCell>
       <TableCell>
+        <Button size={"icon"} variant={"ghost"} onClick={onEdit}>
+          <Pencil />
+        </Button>
         <Button size={"icon"} variant={"ghost"} onClick={onDelete}>
           <Trash2 />
         </Button>
@@ -47,55 +71,60 @@ ApiKeyRow.displayName = "ApiKeyRow";
 
 export default function Client() {
   const { apiKeys, isLoading } = useApiKeys();
-  const [open, setOpen] = useState(false);
-  const { doCreateApiKeyAsync, doDeleteApiKey, isPending } =
-    useApiKeysMutations();
-  const onSubmitForm = async (newKey: ApiKeyRequest) => {
-    try {
-      await doCreateApiKeyAsync(newKey);
-      setOpen(false);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const [openCreate, setOpenCreate] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
+
+  const [apiKey, setApiKey] = useState<ApiKeysSelect | null>(null);
   return (
-    <div className="my-5">
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild className="mb-3">
-          <Button className="float-right cursor-pointer" variant={"outline"}>
-            <Plus /> <span>Register new api key</span>
+    <>
+      <CreateApiKeyDialog open={openCreate} setOpen={setOpenCreate} />
+      <DeleteApiKeyDialog
+        open={openDelete}
+        setOpen={setOpenDelete}
+        apiKey={apiKey}
+        setApiKey={setApiKey}
+      />
+      <UpdateApiKeyDialog
+        setApiKey={setApiKey}
+        apiKey={apiKey}
+        open={openEdit}
+        setOpen={setOpenEdit}
+      />
+      <div className="w-3/4  mx-auto my-5">
+        <div className="w-fit ml-auto">
+          <Button onClick={() => setOpenCreate(true)}>
+            <Plus /> <span>Register new provider</span>
           </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Register Api key</DialogTitle>
-          </DialogHeader>
-          <DialogDescription>
-            You can create a quick api key here
-          </DialogDescription>
-          <ApiKeysForm sendForm={onSubmitForm} />
-        </DialogContent>
-      </Dialog>
-      <Table>
-        <TableCaption>Your registered api keys.</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Description</TableHead>
-            <TableHead>Value</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {apiKeys.map((x) => (
-            <ApiKeyRow
-              apiKey={x}
-              key={x.id}
-              onDelete={() => doDeleteApiKey(x.id)}
-            />
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+        </div>
+        <Table>
+          <TableCaption>Your registered api keys.</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Name</TableHead>
+              <TableHead>Description</TableHead>
+              <TableHead>Value</TableHead>
+              <TableHead>Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {apiKeys.map((x) => (
+              <ApiKeyRow
+                apiKey={x}
+                key={x.id}
+                onDelete={() => {
+                  setApiKey(x);
+                  setOpenDelete(true);
+                }}
+                onEdit={() => {
+                  setApiKey(x);
+                  setOpenEdit(true);
+                }}
+              />
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    </>
   );
 }

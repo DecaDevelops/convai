@@ -19,3 +19,24 @@ export async function createProvider(req: ProviderRequest) {
   await db.insert(Provider).values(ProviderFactory.Create(req));
   return true;
 }
+
+export async function updateProvider({
+  providerId,
+  req,
+}: {
+  providerId: string;
+  req: ProviderRequest;
+}) {
+  const [provider] = await db
+    .select()
+    .from(Provider)
+    .where(eq(Provider.id, providerId))
+    .limit(1);
+  if (!provider) throw new Error("Provider not found");
+
+  await db
+    .update(Provider)
+    .set(ProviderFactory.CreateUpdate(provider, req))
+    .where(eq(Provider.id, providerId));
+  return true;
+}

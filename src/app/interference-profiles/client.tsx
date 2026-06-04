@@ -35,6 +35,8 @@ const InterferenceProfileTableRow: React.FC<{
 }> = memo(({ profile, modelName, onDelete }) => {
   return (
     <TableRow>
+      <TableCell>{profile.name ?? "N/A"}</TableCell>
+      <TableCell>{profile.description ?? "N/A"}</TableCell>
       <TableCell>{modelName ?? "N/A"}</TableCell>
       <TableCell>{profile.temperature / 100}</TableCell>
       <TableCell>{profile.topK}</TableCell>
@@ -76,53 +78,46 @@ export default function Client() {
   };
 
   return (
-    <div className="w-full my-5 space-y-2">
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild className="float-right">
-          <Button variant={"outline"}>
-            <Plus /> <span>Create New Profile</span>
-          </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Create Interference Profile</DialogTitle>
-          </DialogHeader>
-          <DialogDescription>
-            Configure model parameters for fine-tuned control over AI responses
-          </DialogDescription>
-          <InterferenceProfileForm
-            isPending={isPending}
-            onSendForm={onProfileCreate}
-          />
-        </DialogContent>
-      </Dialog>
-      <Table>
-        <TableCaption>Registered Interference Profiles</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Model</TableHead>
-            <TableHead>Temperature</TableHead>
-            <TableHead>Top K</TableHead>
-            <TableHead>Top P</TableHead>
-            <TableHead>Max Tokens</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {interferenceProfiles.map((x) => (
-            <InterferenceProfileTableRow
-              profile={x}
-              modelName={
-                x.modelId
-                  ? (mappedModels.get(x.modelId)?.name ?? undefined)
-                  : undefined
-              }
-              onDelete={() => doDeleteInterferenceProfile(x.id)}
-              key={x.id}
-            />
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+    <>
+      <div className="w-full my-5 space-y-2">
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild className="float-right">
+            <Button variant={"outline"}>
+              <Plus /> <span>Create New Profile</span>
+            </Button>
+          </DialogTrigger>
+          <DialogContent></DialogContent>
+        </Dialog>
+        <Table>
+          <TableCaption>Registered Interference Profiles</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead>(Nick)name</TableHead>
+              <TableHead>Description</TableHead>
+              <TableHead>Model</TableHead>
+              <TableHead>Temperature</TableHead>
+              <TableHead>Top K</TableHead>
+              <TableHead>Top P</TableHead>
+              <TableHead>Max Tokens</TableHead>
+              <TableHead>Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {interferenceProfiles.map((x) => (
+              <InterferenceProfileTableRow
+                profile={x}
+                modelName={
+                  x.modelId
+                    ? (mappedModels.get(x.modelId)?.name ?? undefined)
+                    : undefined
+                }
+                onDelete={() => doDeleteInterferenceProfile(x.id)}
+                key={x.id}
+              />
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    </>
   );
 }

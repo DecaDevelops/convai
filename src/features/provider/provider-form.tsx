@@ -32,13 +32,15 @@ ApiKeySelectItem.displayName = "ApiKeySelectItem";
 export default function ProviderForm({
   onSendForm,
   isPending,
+  _provider,
 }: {
+  _provider?: ProviderRequest;
   onSendForm: (req: ProviderRequest) => void;
   isPending: boolean;
 }) {
   const { apiKeys } = useApiKeys();
 
-  const [provider, setProvider] = useState(DEFAULT);
+  const [provider, setProvider] = useState(_provider ?? DEFAULT);
   const onSubmitForm = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isPending) return;
@@ -76,6 +78,7 @@ export default function ProviderForm({
         }
       />
       <Select
+        value={provider.apiKeyId ?? ""}
         onValueChange={(e) => setProvider((c) => ({ ...c, apiKeyId: e }))}
       >
         <SelectTrigger className="w-full">

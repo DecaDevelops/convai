@@ -14,8 +14,11 @@ import { Button } from "@/components/ui/button";
 import { Save } from "lucide-react";
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 const DEFAULT: InterferenceProfileRequest = {
+  name: "",
+  description: "",
   modelId: "",
   topK: 70,
   topP: 0.7,
@@ -47,6 +50,33 @@ export default function InterferenceProfileForm({
   };
   return (
     <form onSubmit={onSubmitForm} className="space-y-2 w-full">
+      <Field>
+        <FieldLabel htmlFor="nickname">Nickname</FieldLabel>
+        <Input
+          id="nickname"
+          value={profile.name ?? ""}
+          placeholder="Nickname"
+          onChange={(e) => setProfile((c) => ({ ...c, name: e.target.value }))}
+        />
+        <FieldDescription className="text-sm">
+          This is the nickname for your ease
+        </FieldDescription>
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="description">Description</FieldLabel>
+        <Textarea
+          id="description"
+          value={profile.description ?? ""}
+          onChange={(e) =>
+            setProfile((c) => ({ ...c, description: e.target.value }))
+          }
+          placeholder="Description"
+          className="h-32 max-h-32 resize-none"
+        />
+        <FieldDescription className="text-sm">
+          A description to remind you what this model was for
+        </FieldDescription>
+      </Field>
       <Field>
         <FieldLabel htmlFor="model">
           Model<span className="text-red-500">*</span>

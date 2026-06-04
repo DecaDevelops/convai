@@ -35,12 +35,14 @@ ModelSelectItem.displayName = "ModelSelectItem";
 export default function ModelForm({
   isPending,
   onSendForm,
+  _model,
 }: {
+  _model?: ModelRequest;
   onSendForm: (req: ModelRequest) => void;
   isPending: boolean;
 }) {
   const { providers } = useProvider();
-  const [model, setModel] = useState(DEFAULT);
+  const [model, setModel] = useState(_model ?? DEFAULT);
 
   const onHandleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -52,6 +54,7 @@ export default function ModelForm({
       <Field>
         <FieldLabel htmlFor="provider">Selected Provider</FieldLabel>
         <Select
+          value={model.providerId ?? ""}
           onValueChange={(e) => setModel((c) => ({ ...c, providerId: e }))}
         >
           <SelectTrigger id="provider" className="w-full">

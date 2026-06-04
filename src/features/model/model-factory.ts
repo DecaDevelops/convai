@@ -1,4 +1,4 @@
-import { ModelInsert, ModelRequest } from "./model-types";
+import { ModelInsert, ModelRequest, ModelSelect } from "./model-types";
 import { v4 as uuidv4 } from "uuid";
 export class ModelFactory {
   public static Create(req: ModelRequest): ModelInsert {
@@ -14,6 +14,20 @@ export class ModelFactory {
       tags: req.tags,
       createdAt: date,
       updatedAt: date,
+    };
+  }
+
+  public static Update(model: ModelSelect, req: ModelRequest): ModelInsert {
+    return {
+      ...model,
+      contextSize: req.contextSize,
+      description: req.description,
+      maxTokenResponse: req.maxTokenResponse,
+      name: req.name,
+      providerId: req.providerId,
+      providerModelName: req.providerModelName,
+      tags: req.tags,
+      updatedAt: new Date(),
     };
   }
 }

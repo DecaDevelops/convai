@@ -1,6 +1,7 @@
 import {
   InterferenceProfileInsert,
   InterferenceProfileRequest,
+  InterferenceProfileSelect,
 } from "./interference-profile-types";
 import { v4 as uuidv4 } from "uuid";
 export class InterferenceProfileFactory {
@@ -10,6 +11,8 @@ export class InterferenceProfileFactory {
     const date = new Date();
     return {
       id: uuidv4(),
+      description: req.description,
+      name: req.name,
       temperature: Math.round(req.temperature * 100),
       maxResponseTokens: req.maxResponseTokens ?? 300,
       modelId: req.modelId,
@@ -17,6 +20,23 @@ export class InterferenceProfileFactory {
       topP: Math.round(req?.topP ? req.topP * 100 : 70),
       createdAt: date,
       updatedAt: date,
+    };
+  }
+
+  public static Update(
+    profile: InterferenceProfileSelect,
+    req: InterferenceProfileRequest,
+  ): InterferenceProfileInsert {
+    return {
+      ...profile,
+      name: req.name,
+      description: req.description,
+      temperature: req.temperature,
+      topK: req.topK,
+      topP: req.topP,
+      maxResponseTokens: req.maxResponseTokens,
+      modelId: req.modelId,
+      updatedAt: new Date(),
     };
   }
 }

@@ -90,6 +90,8 @@ export const InterferenceProfile = sqliteTable("interference_profile", {
   modelId: text("model_id").references(() => Model.id, {
     onDelete: "set null",
   }),
+  name: text(),
+  description: text(),
   topK: int("top_k").notNull().default(70),
   topP: int("top_p").notNull().default(40),
   temperature: int("temperature").notNull(),

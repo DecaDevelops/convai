@@ -1,7 +1,11 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createProvider, deleteProvider } from "./provider-action";
+import {
+  createProvider,
+  deleteProvider,
+  updateProvider,
+} from "./provider-action";
 import { toast } from "sonner";
 
 export default function useProviderMutations() {
@@ -19,7 +23,11 @@ export default function useProviderMutations() {
       onError: (err) => toast.error(err.message),
     });
 
-  const { mutate: doDeleteProvider, isPending: isDeleting } = useMutation({
+  const {
+    mutate: doDeleteProvider,
+    mutateAsync: doDeleteProviderAsync,
+    isPending: isDeleting,
+  } = useMutation({
     mutationFn: deleteProvider,
     onSuccess: () => {
       toast.success("Provider has been deleted");
@@ -28,11 +36,22 @@ export default function useProviderMutations() {
     onError: (err) => toast.error(err.message),
   });
 
-  const isPending = isCreating || isDeleting;
+  const { mutateAsync: doUpdateProviderAsync, isPending: isPendingUpdate } =
+    useMutation({
+      mutationFn: updateProvider,
+      onSuccess: () => {
+        toast.success("Provider has been updated");
+        invalidateQuery();
+      },
+      onError: (err) => toast.error(err.message),
+    });
+  const isPending = isCreating || isDeleting || isPendingUpdate;
 
   return {
     doCreateProviderAsync,
     doDeleteProvider,
+    doDeleteProviderAsync,
+    doUpdateProviderAsync,
     isPending,
   };
 }

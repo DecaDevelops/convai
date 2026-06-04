@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   createInterferenceProfile,
   deleteInterferenceProfile,
+  updateInterferenceProfile,
 } from "./interference-profile.action";
 import { toast } from "sonner";
 
@@ -33,10 +34,23 @@ export default function useInterferenceProfileMutations() {
       },
       onError: (err) => toast.error(err.message),
     });
-  const isPending = isPendingCreate || isPendingDelete;
+
+  const {
+    mutateAsync: doUpdateInterferenceProfileAsync,
+    isPending: isPendingUpdate,
+  } = useMutation({
+    mutationFn: updateInterferenceProfile,
+    onSuccess: () => {
+      toast.success("Interference Profile has been updated");
+      invalidateQueries();
+    },
+    onError: (err) => toast.error(err.message),
+  });
+  const isPending = isPendingCreate || isPendingDelete || isPendingUpdate;
   return {
     doCreateInterferenceProfileAsync,
     doDeleteInterferenceProfile,
+    doUpdateInterferenceProfileAsync,
     isPending,
   };
 }

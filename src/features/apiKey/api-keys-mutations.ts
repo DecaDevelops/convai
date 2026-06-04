@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createApiKey, deleteApiKey } from "./api-keys-action";
+import { createApiKey, deleteApiKey, updateApiKey } from "./api-keys-action";
 import { toast } from "sonner";
 
 export default function useApiKeysMutations() {
@@ -22,7 +22,11 @@ export default function useApiKeysMutations() {
     onError: (err) => toast.error(err.message),
   });
 
-  const { mutate: doDeleteApiKey, isPending: isPendingDelete } = useMutation({
+  const {
+    mutate: doDeleteApiKey,
+    mutateAsync: doDeleteApiKeyAsync,
+    isPending: isPendingDelete,
+  } = useMutation({
     mutationFn: deleteApiKey,
     onSuccess: () => {
       toast.success("Api key has been removed");
@@ -30,11 +34,23 @@ export default function useApiKeysMutations() {
     },
   });
 
-  const isPending = isPendingCreate || isPendingDelete;
+  const { mutateAsync: doUpdateApiKeyAsync, isPending: isPendingUpdate } =
+    useMutation({
+      mutationFn: updateApiKey,
+      onSuccess: () => {
+        toast.success("Api key has been updated");
+        invalidateQuery();
+      },
+      onError: (err) => toast.error(err.message),
+    });
+
+  const isPending = isPendingCreate || isPendingDelete || isPendingUpdate;
   return {
     doCreateApiKey,
     doCreateApiKeyAsync,
     doDeleteApiKey,
+    doDeleteApiKeyAsync,
+    doUpdateApiKeyAsync,
     isPending,
   };
 }

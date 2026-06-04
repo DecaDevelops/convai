@@ -13,10 +13,14 @@ const DEFAULT: ApiKeyRequest = {
 };
 export default function ApiKeysForm({
   sendForm,
+  isPending,
+  _apiKey,
 }: {
   sendForm: (req: ApiKeyRequest) => void;
+  isPending: boolean;
+  _apiKey?: ApiKeyRequest;
 }) {
-  const [apiKey, setApiKey] = useState<ApiKeyRequest>(DEFAULT);
+  const [apiKey, setApiKey] = useState<ApiKeyRequest>(_apiKey ?? DEFAULT);
   const onSendForm = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     sendForm(apiKey);

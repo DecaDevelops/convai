@@ -19,3 +19,24 @@ export async function deleteModel(modelId: string) {
   await db.delete(Model).where(eq(Model.id, modelId));
   return true;
 }
+
+export async function updateModel({
+  modelId,
+  req,
+}: {
+  modelId: string;
+  req: ModelRequest;
+}) {
+  const [model] = await db
+    .select()
+    .from(Model)
+    .where(eq(Model.id, modelId))
+    .limit(1);
+  if (!model) throw new Error("Model not found");
+
+  await db
+    .update(Model)
+    .set(ModelFactory.Update(model, req))
+    .where(eq(Model.id, modelId));
+  return true;
+}

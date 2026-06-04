@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createModel, deleteModel } from "./model-action";
+import { createModel, deleteModel, updateModel } from "./model-action";
 import { toast } from "sonner";
 
 export default function useModelMutations() {
@@ -19,7 +19,11 @@ export default function useModelMutations() {
       onError: (err) => toast.error(err.message),
     });
 
-  const { mutate: doDelete, isPending: isPendingDelete } = useMutation({
+  const {
+    mutate: doDelete,
+    mutateAsync: doDeleteAsync,
+    isPending: isPendingDelete,
+  } = useMutation({
     mutationFn: deleteModel,
     onSuccess: () => {
       toast.success("Model has been deleted");
@@ -28,11 +32,23 @@ export default function useModelMutations() {
     onError: (err) => toast.error(err.message),
   });
 
-  const isPending = isPendingCreate || isPendingDelete;
+  const { mutateAsync: doUpdateAsync, isPending: isPendingUpdate } =
+    useMutation({
+      mutationFn: updateModel,
+      onSuccess: () => {
+        toast.success("Model has been updated");
+        invalidateQuery();
+      },
+      onError: (err) => toast.error(err.message),
+    });
+
+  const isPending = isPendingCreate || isPendingDelete || isPendingUpdate;
 
   return {
     doCreateModelAsync,
     doDelete,
+    doDeleteAsync,
+    doUpdateAsync,
     isPending,
   };
 }

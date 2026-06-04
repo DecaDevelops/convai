@@ -20,16 +20,22 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import useModels from "@/features/model/model-context";
+import {
+  CreateModelDialog,
+  DeleteModelDialog,
+  EditModelDialog,
+} from "@/features/model/model-dialogs";
 import ModelForm from "@/features/model/model-form";
 import { ModelRequest, ModelSelect } from "@/features/model/model-types";
 import useModelMutations from "@/features/model/use-model-mutation";
-import { Plus, Trash2 } from "lucide-react";
+import { Pencil, Plus, Trash2 } from "lucide-react";
 import React, { memo, useState } from "react";
 
 const ModelTableRow: React.FC<{
   model: ModelSelect;
   onDelete: VoidFunction;
-}> = memo(({ model, onDelete }) => {
+  onEdit: VoidFunction;
+}> = memo(({ model, onDelete, onEdit }) => {
   return (
     <TableRow>
       <TableCell>{model.name}</TableCell>
@@ -41,6 +47,9 @@ const ModelTableRow: React.FC<{
         <Button onClick={onDelete} variant={"ghost"} size={"icon"}>
           <Trash2 />
         </Button>
+        <Button onClick={onEdit} variant={"ghost"} size={"icon"}>
+          <Pencil />
+        </Button>
       </TableCell>
     </TableRow>
   );
@@ -50,57 +59,66 @@ ModelTableRow.displayName = "ModelTableRow";
 export default function Client() {
   const { models } = useModels();
   const { doCreateModelAsync, doDelete, isPending } = useModelMutations();
-  const [open, setOpen] = useState(false);
-  const onRegisterModel = async (req: ModelRequest) => {
-    try {
-      await doCreateModelAsync(req);
-      setOpen(false);
-    } catch {
-      //do something on error
-    }
-  };
+
+  const [model, setModel] = useState<ModelSelect | null>(null);
+  const [isOpenCreate, setIsOpenCreate] = useState(false);
+  const [isOpenDelete, setIsOpenDelete] = useState(false);
+  const [isOpenEdit, setIsOpenEdit] = useState(false);
   return (
-    <div className="my-5 space-y-2">
-      <div className="ml-auto w-fit">
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button variant={"outline"} className="ml-auto">
-              <Plus /> <span>Add Model</span>
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Create Model</DialogTitle>
-            </DialogHeader>
-            <ModelForm onSendForm={onRegisterModel} isPending={isPending} />
-            <DialogFooter>
-              <DialogClose>Cancel</DialogClose>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+    <>
+      <DeleteModelDialog
+        model={model}
+        open={isOpenDelete}
+        setModel={setModel}
+        setOpen={setIsOpenDelete}
+      />
+      <EditModelDialog
+        model={model}
+        open={isOpenEdit}
+        setModel={setModel}
+        setOpen={setIsOpenEdit}
+      />
+      <CreateModelDialog open={isOpenCreate} setOpen={setIsOpenCreate} />
+      <div className="my-5">
+        <div className="w-fit ml-auto my-2">
+          <Button
+            variant={"outline"}
+            className="ml-auto"
+            onClick={() => setIsOpenCreate(true)}
+          >
+            <Plus /> <span>Add Model</span>
+          </Button>
+        </div>
+        <Table>
+          <TableCaption>Registered models</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Name</TableHead>
+              <TableHead>Model name</TableHead>
+              <TableHead>Description</TableHead>
+              <TableHead>Context size</TableHead>
+              <TableHead>Max response tokens</TableHead>
+              <TableHead>Options</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {models.map((x) => (
+              <ModelTableRow
+                model={x}
+                onDelete={() => {
+                  setIsOpenDelete(true);
+                  setModel(x);
+                }}
+                onEdit={() => {
+                  setIsOpenEdit(true);
+                  setModel(x);
+                }}
+                key={x.id}
+              />
+            ))}
+          </TableBody>
+        </Table>
       </div>
-      <Table>
-        <TableCaption>Registered models</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Model name</TableHead>
-            <TableHead>Description</TableHead>
-            <TableHead>Context size</TableHead>
-            <TableHead>Max response tokens</TableHead>
-            <TableHead>Options</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {models.map((x) => (
-            <ModelTableRow
-              model={x}
-              onDelete={() => doDelete(x.id)}
-              key={x.id}
-            />
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+    </>
   );
 }

@@ -25,3 +25,26 @@ export async function deleteInterferenceProfile(interferenceProfileId: string) {
     .where(eq(InterferenceProfile.id, interferenceProfileId));
   return true;
 }
+
+export async function updateInterferenceProfile({
+  profileId,
+  req,
+}: {
+  profileId: string;
+  req: InterferenceProfileRequest;
+}) {
+  const [profile] = await db
+    .select()
+    .from(InterferenceProfile)
+    .where(eq(InterferenceProfile.id, profileId))
+    .limit(1);
+
+  if (!profile) throw new Error("Could not find request resource");
+
+  await db
+    .update(InterferenceProfile)
+    .set(InterferenceProfileFactory.Update(profile, req))
+    .where(eq(InterferenceProfile.id, profileId));
+
+  return true;
+}
