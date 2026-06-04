@@ -1,5 +1,4 @@
 import { getChats } from "@/features/chat/chat-action";
-import React from "react";
 import Client from "./client";
 import { Metadata } from "next";
 export const metdata: Metadata = {

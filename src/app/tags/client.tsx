@@ -1,8 +1,6 @@
 "use client";
 import useTags from "@/features/tag/tag-context";
-import TagForm from "@/features/tag/tag-form";
-import React, { useState } from "react";
-import TagCreateDialog from "./components/TagCreateDialog";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import {
@@ -14,10 +12,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import TagTableRow from "./components/TagTableRow";
-import useTagMutations from "@/features/tag/use-tag-mutations";
+import { TagCreateDialog } from "@/features/tag/tag-dialogs";
 
 export default function Client() {
-  const { tags, isLoadingTags } = useTags();
+  const { tags } = useTags();
 
   const [open, setOpen] = useState(false);
   return (

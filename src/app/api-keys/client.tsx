@@ -16,7 +16,6 @@ import {
   DeleteApiKeyDialog,
   UpdateApiKeyDialog,
 } from "@/features/apiKey/api-keys-dialogs";
-import useApiKeysMutations from "@/features/apiKey/api-keys-mutations";
 import { ApiKeysSelect } from "@/features/apiKey/api-keys-types";
 import { setClipboard } from "@/lib/write-to-clipboard";
 import { Eye, EyeClosed, Pencil, Plus, Trash2 } from "lucide-react";
@@ -70,7 +69,7 @@ const ApiKeyRow: React.FC<{
 ApiKeyRow.displayName = "ApiKeyRow";
 
 export default function Client() {
-  const { apiKeys, isLoading } = useApiKeys();
+  const { apiKeys } = useApiKeys();
   const [openCreate, setOpenCreate] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);

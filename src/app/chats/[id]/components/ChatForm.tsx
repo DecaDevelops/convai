@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import useChattingMutations from "@/features/chatting/use-chatting-mutations";
 import { Loader2, Send } from "lucide-react";
 import { useParams } from "next/navigation";
-import React, { SyntheticEvent, useRef, useState } from "react";
+import { SyntheticEvent, useRef, useState } from "react";
 
 export default function ChatForm() {
   const { id } = useParams<{ id: string }>();

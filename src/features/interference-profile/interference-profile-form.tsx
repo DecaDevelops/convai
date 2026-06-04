@@ -35,13 +35,15 @@ ModelSelectItem.displayName = "ModelSelectItem";
 export default function InterferenceProfileForm({
   onSendForm,
   isPending,
+  _interferenceProfile,
 }: {
   onSendForm: (req: InterferenceProfileRequest) => void;
   isPending: boolean;
+  _interferenceProfile?: InterferenceProfileRequest;
 }) {
   const { models } = useModels();
 
-  const [profile, setProfile] = useState(DEFAULT);
+  const [profile, setProfile] = useState(_interferenceProfile ?? DEFAULT);
   const onSubmitForm = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isPending) return;
@@ -84,6 +86,7 @@ export default function InterferenceProfileForm({
         <Select
           required
           onValueChange={(e) => setProfile((c) => ({ ...c, modelId: e }))}
+          value={profile.modelId ?? ""}
         >
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Select model" />

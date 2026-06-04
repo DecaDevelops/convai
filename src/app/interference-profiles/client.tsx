@@ -1,14 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
   Table,
   TableBody,
   TableCaption,
@@ -18,21 +10,22 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import useInterferenceProfiles from "@/features/interference-profile/interference-profile-context";
-import InterferenceProfileForm from "@/features/interference-profile/interference-profile-form";
 import {
-  InterferenceProfileRequest,
-  InterferenceProfileSelect,
-} from "@/features/interference-profile/interference-profile-types";
-import useInterferenceProfileMutations from "@/features/interference-profile/use-interference-profile-mutations";
+  CreateInterferenceProfileDialog,
+  DeleteInterferenceProfileDialog,
+  UpdateInterferenceProfileDialog,
+} from "@/features/interference-profile/interference-profile-dialogs";
+import { InterferenceProfileSelect } from "@/features/interference-profile/interference-profile-types";
 import useModels from "@/features/model/model-context";
-import { Plus, Trash2 } from "lucide-react";
+import { Pencil, Plus, Trash2 } from "lucide-react";
 import React, { memo, useState } from "react";
 
 const InterferenceProfileTableRow: React.FC<{
   profile: InterferenceProfileSelect;
   modelName?: string;
   onDelete: VoidFunction;
-}> = memo(({ profile, modelName, onDelete }) => {
+  onEdit: VoidFunction;
+}> = memo(({ profile, modelName, onDelete, onEdit }) => {
   return (
     <TableRow>
       <TableCell>{profile.name ?? "N/A"}</TableCell>
@@ -51,6 +44,14 @@ const InterferenceProfileTableRow: React.FC<{
         >
           <Trash2 />
         </Button>
+        <Button
+          variant={"ghost"}
+          size={"icon"}
+          className="cursor-pointer"
+          onClick={onEdit}
+        >
+          <Pencil />
+        </Button>
       </TableCell>
     </TableRow>
   );
@@ -61,33 +62,37 @@ InterferenceProfileTableRow.displayName = "InterferenceProfileTableRow";
 export default function Client() {
   const { interferenceProfiles } = useInterferenceProfiles();
   const { mappedModels } = useModels();
-  const {
-    doCreateInterferenceProfileAsync,
-    doDeleteInterferenceProfile,
-    isPending,
-  } = useInterferenceProfileMutations();
-  const [open, setOpen] = useState(false);
-
-  const onProfileCreate = async (req: InterferenceProfileRequest) => {
-    try {
-      await doCreateInterferenceProfileAsync(req);
-      setOpen(false);
-    } catch {
-      // Error is handled by the mutation hook with toast
-    }
-  };
-
+  const [openCreate, setOpenCreate] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
+  const [profile, setProfile] = useState<InterferenceProfileSelect | null>(
+    null,
+  );
   return (
     <>
-      <div className="w-full my-5 space-y-2">
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild className="float-right">
-            <Button variant={"outline"}>
-              <Plus /> <span>Create New Profile</span>
-            </Button>
-          </DialogTrigger>
-          <DialogContent></DialogContent>
-        </Dialog>
+      <CreateInterferenceProfileDialog
+        open={openCreate}
+        setOpen={setOpenCreate}
+      />
+      <UpdateInterferenceProfileDialog
+        open={openEdit}
+        profile={profile}
+        setProfile={setProfile}
+        setOpen={setOpenEdit}
+      />
+      <DeleteInterferenceProfileDialog
+        open={openDelete}
+        profile={profile}
+        setOpen={setOpenDelete}
+        setProfile={setProfile}
+      />
+
+      <div className="w-3/4 mx-auto my-5 space-y-2">
+        <div className="w-fit ml-auto">
+          <Button variant={"outline"} onClick={() => setOpenCreate(true)}>
+            <Plus /> <span>Create New Profile</span>
+          </Button>
+        </div>
         <Table>
           <TableCaption>Registered Interference Profiles</TableCaption>
           <TableHeader>
@@ -111,7 +116,14 @@ export default function Client() {
                     ? (mappedModels.get(x.modelId)?.name ?? undefined)
                     : undefined
                 }
-                onDelete={() => doDeleteInterferenceProfile(x.id)}
+                onDelete={() => {
+                  setProfile(x);
+                  setOpenDelete(true);
+                }}
+                onEdit={() => {
+                  setOpenEdit(true);
+                  setProfile(x);
+                }}
                 key={x.id}
               />
             ))}

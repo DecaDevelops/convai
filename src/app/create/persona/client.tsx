@@ -3,7 +3,6 @@ import { createPersona } from "@/features/persona/persona-action";
 import PersonaForm from "@/features/persona/persona-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import React from "react";
 import { toast } from "sonner";
 
 export default function Client() {

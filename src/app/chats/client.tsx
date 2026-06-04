@@ -1,7 +1,6 @@
 "use client";
 import { ChatSelect } from "@/features/chat/chat-types";
 import Link from "next/link";
-import React from "react";
 
 type props = {
   chats: ChatSelect[];

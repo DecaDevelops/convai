@@ -31,10 +31,10 @@ export class InterferenceProfileFactory {
       ...profile,
       name: req.name,
       description: req.description,
-      temperature: req.temperature,
+      temperature: Math.round(req.temperature * 100),
       topK: req.topK,
-      topP: req.topP,
-      maxResponseTokens: req.maxResponseTokens,
+      topP: Math.round(req?.topP ? req.topP * 100 : 70),
+      maxResponseTokens: req.maxResponseTokens ?? 300,
       modelId: req.modelId,
       updatedAt: new Date(),
     };

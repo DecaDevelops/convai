@@ -1,15 +1,5 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -25,9 +15,7 @@ import {
   DeleteModelDialog,
   EditModelDialog,
 } from "@/features/model/model-dialogs";
-import ModelForm from "@/features/model/model-form";
-import { ModelRequest, ModelSelect } from "@/features/model/model-types";
-import useModelMutations from "@/features/model/use-model-mutation";
+import { ModelSelect } from "@/features/model/model-types";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import React, { memo, useState } from "react";
 
@@ -58,7 +46,6 @@ const ModelTableRow: React.FC<{
 ModelTableRow.displayName = "ModelTableRow";
 export default function Client() {
   const { models } = useModels();
-  const { doCreateModelAsync, doDelete, isPending } = useModelMutations();
 
   const [model, setModel] = useState<ModelSelect | null>(null);
   const [isOpenCreate, setIsOpenCreate] = useState(false);

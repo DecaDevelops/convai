@@ -1,6 +1,5 @@
 "use client";
 import usePersonas from "@/features/persona/persona-context";
-import React from "react";
 import PersonaCard from "@/features/persona/persona-card";
 import UploadPersona from "./components/upload-persona";
 export default function Client() {

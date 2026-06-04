@@ -25,15 +25,18 @@ export default function useInterferenceProfileMutations() {
     onError: (err) => toast.error(err.message),
   });
 
-  const { mutate: doDeleteInterferenceProfile, isPending: isPendingDelete } =
-    useMutation({
-      mutationFn: deleteInterferenceProfile,
-      onSuccess: () => {
-        toast.success("Interference Profile has been deleted");
-        invalidateQueries();
-      },
-      onError: (err) => toast.error(err.message),
-    });
+  const {
+    mutate: doDeleteInterferenceProfile,
+    mutateAsync: doDeleteInterferenceProfileAsync,
+    isPending: isPendingDelete,
+  } = useMutation({
+    mutationFn: deleteInterferenceProfile,
+    onSuccess: () => {
+      toast.success("Interference Profile has been deleted");
+      invalidateQueries();
+    },
+    onError: (err) => toast.error(err.message),
+  });
 
   const {
     mutateAsync: doUpdateInterferenceProfileAsync,
@@ -50,6 +53,7 @@ export default function useInterferenceProfileMutations() {
   return {
     doCreateInterferenceProfileAsync,
     doDeleteInterferenceProfile,
+    doDeleteInterferenceProfileAsync,
     doUpdateInterferenceProfileAsync,
     isPending,
   };

@@ -1,12 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
+import TagEditDialog, { TagDeleteDialog } from "@/features/tag/tag-dialogs";
 import { TagSelect } from "@/features/tag/tag-types";
 import useTagMutations from "@/features/tag/use-tag-mutations";
 import { Pencil, Trash2 } from "lucide-react";
 import React, { memo, useState } from "react";
-import TagEditDialog from "./TagEditDialog";
-import TagDeleteDialog from "./TagDeleteDialog";
-
 function TagTableRow({ tag }: { tag: TagSelect }) {
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
