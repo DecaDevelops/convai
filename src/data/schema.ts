@@ -1,6 +1,6 @@
 import { Role } from "@/features/chat-message/enum";
 import { sql } from "drizzle-orm";
-import { int, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { int, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 const timestamps = {
   createdAt: int("created_at", { mode: "timestamp" }),
@@ -18,6 +18,7 @@ export const Character = sqliteTable("characters", {
   scenario: text(),
   exampleDialogue: text("example_dialogue"),
   instructions: text("instructions"),
+  tokenCount: integer("token_count").notNull().default(0),
   ...timestamps,
 });
 
@@ -26,6 +27,7 @@ export const Persona = sqliteTable("personas", {
   name: text().notNull(),
   image: text(),
   description: text(),
+  tokenCount: integer("token_count").notNull().default(0),
   ...timestamps,
 });
 

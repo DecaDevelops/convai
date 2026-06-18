@@ -7,16 +7,14 @@ import {
 } from "../chatting/chatting-action";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { createChat, createNewChat } from "./chat-action";
+import { createChat, createNewChat, deleteChat } from "./chat-action";
 
 export function useChatMutations() {
   const queryClient = useQueryClient();
   const { push } = useRouter();
 
-  const invalidateQuery = (msg?: string) => {
-    if (msg) toast.success(msg);
-
-    // queryClient.invalidateQueries({ queryKey: ["chats"] });
+  const invalidateQuery = () => {
+    queryClient.invalidateQueries({ queryKey: ["chats"] });
   };
   const { mutate: doCreateChat } = useMutation({
     mutationFn: createChat,
@@ -34,6 +32,13 @@ export function useChatMutations() {
     onError: (err) => toast.error(err.message),
   });
 
+  const { mutate: doDeleteChat } = useMutation({
+    mutationFn: deleteChat,
+    onSuccess: () => {
+      toast.success(`chat has been deleted`);
+      invalidateQuery();
+    },
+  });
   const { mutate: doUpdateActivePersona, isPending: isPendingUpdatePersona } =
     useMutation({
       mutationFn: updateActivePersona,
@@ -56,6 +61,7 @@ export function useChatMutations() {
     doUpdateActiveProfile,
     doCreateChat,
     doCreateNewChat,
+    doDeleteChat,
     isPending,
   };
 }

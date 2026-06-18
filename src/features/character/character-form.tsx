@@ -16,6 +16,8 @@ import Image from "next/image";
 import { Label } from "@/components/ui/label";
 import { FormDataConverter } from "@/lib/form-data";
 import { CharacterMapper } from "./character-mapper";
+import { TagSelect } from "../tag/tag-types";
+import TagSelector from "@/components/tag-selector";
 const DEFAULT_CHARACTER: characterRequest = {
   name: "",
   greeting: "",
@@ -39,6 +41,7 @@ export default function CharacterForm({
   const [character, setCharacter] = useState<characterRequest>(
     _character ? CharacterMapper.toRequest(_character) : DEFAULT_CHARACTER,
   );
+  const [selectedTags, setSelectedTags] = useState<TagSelect[]>([]);
   const [upload, setUpload] = useState<File | null>(null);
   const [open, setOpen] = useState(false);
 
@@ -125,6 +128,10 @@ export default function CharacterForm({
           />
         </CardContent>
         <CardFooter className="py-1 flex flex-col space-y-2">
+          <TagSelector
+            selectedTags={selectedTags}
+            setSelectedTags={setSelectedTags}
+          />
           <Button className="ml-auto bg-blue-600 hover:bg-blue-500 text-white cursor-pointer">
             <Plus /> <span>Create Character</span>
           </Button>
