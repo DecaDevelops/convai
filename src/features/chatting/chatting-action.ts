@@ -12,7 +12,7 @@ import {
   Provider as ProviderTable,
 } from "@/data/schema";
 import { deepseekRules } from "@/lib/openai/deepseek-client";
-import { eq, asc } from "drizzle-orm";
+import { eq, asc, and } from "drizzle-orm";
 import { ChatMessageSelect } from "../chat-message/types";
 import { ChatCompletionMessageParam } from "openai/resources";
 import { ChatMessageFactory } from "../chat-message/ChatMessageFactory";
@@ -215,4 +215,21 @@ export async function continueMessage(chatId: string) {
     .returning();
 
   return chatMessage;
+}
+
+export async function updateMessage({
+  ChatId,
+  Message,
+  MessageId,
+}: {
+  ChatId: string;
+  MessageId: number;
+  Message: string;
+}) {
+  await db
+    .update(ChatMessage)
+    .set({
+      content: Message,
+    })
+    .where(and(eq(ChatMessage.id, MessageId), eq(ChatMessage.chatId, ChatId)));
 }

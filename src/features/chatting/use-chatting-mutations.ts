@@ -1,12 +1,14 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { continueMessage, sendMessage } from "./chatting-action";
+import { continueMessage, sendMessage, updateMessage } from "./chatting-action";
 import { ChatMessageSelect } from "../chat-message/types";
 import { toast } from "sonner";
 import { Role } from "../chat-message/enum";
+import { useParams, usePathname } from "next/navigation";
 
 export default function useChattingMutations() {
+  const { id } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
 
   const {
@@ -18,15 +20,15 @@ export default function useChattingMutations() {
     onMutate: async ({ chatId, content }) => {
       const chat_history = queryClient.getQueryData<ChatMessageSelect[]>([
         "chat_messages",
-        chatId,
+        id,
       ]);
       if (!chat_history) throw new Error("conversation does not exist");
       await queryClient.cancelQueries({
-        queryKey: ["chat_messages", chatId],
+        queryKey: ["chat_messages", id],
       });
 
       queryClient.setQueryData<ChatMessageSelect[]>(
-        ["chat_messages", chatId],
+        ["chat_messages", id],
         (old) => {
           if (!old) return old;
 
@@ -38,7 +40,7 @@ export default function useChattingMutations() {
               content,
               createdAt: new Date(),
               updatedAt: new Date(),
-              chatId,
+              chatId: id,
             },
           ];
         },
@@ -52,7 +54,7 @@ export default function useChattingMutations() {
       });
 
       queryClient.setQueryData<ChatMessageSelect[]>(
-        ["chat_messages", chatId],
+        ["chat_messages", id],
         (old) => {
           if (!old) return old;
 
@@ -65,11 +67,11 @@ export default function useChattingMutations() {
 
       const { chat_history } = ctx;
       await queryClient.cancelQueries({
-        queryKey: ["chat_messages", chatId],
+        queryKey: ["chat_messages", id],
       });
 
       queryClient.setQueryData<ChatMessageSelect[]>(
-        ["chat_messages", chatId],
+        ["chat_messages", id],
         (old) => {
           if (!old) return old;
           return chat_history;
@@ -98,11 +100,43 @@ export default function useChattingMutations() {
       },
     });
 
+  const { mutateAsync: doUpdateMessageAsync, isPending: isPendingUpdate } =
+    useMutation({
+      mutationFn: ({
+        message,
+        messageId,
+      }: {
+        message: string;
+        messageId: number;
+      }) =>
+        updateMessage({ ChatId: id, Message: message, MessageId: messageId }),
+      onSuccess: async (value, variables) => {
+        await queryClient.cancelQueries({ queryKey: ["chat_messages", id] });
+
+        await queryClient.setQueryData(
+          ["chat_messages", id],
+          (old: ChatMessageSelect[]) => {
+            if (!old) return old;
+
+            return old.map((x) => {
+              if (x.id !== variables.messageId) return x;
+
+              return { ...x, content: variables.message };
+            });
+          },
+        );
+        toast.success("Message has been updated");
+      },
+      onError: (err) => toast.error(err.message),
+    });
+
   const isPending = isPendingSendMessage || isPendingContinue;
   return {
     doContinueMessage,
     doSendMessage,
     doSendMessageAsync,
+    doUpdateMessageAsync,
     isPending,
+    isPendingUpdate,
   };
 }
